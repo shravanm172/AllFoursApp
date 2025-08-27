@@ -1,0 +1,284 @@
+/* Player Hand Styling */
+.player-hand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  height: 100%;
+  position: relative;
+}
+
+/* Player Name Styling */
+.player-name {
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 0.2rem 0.2rem 0.4rem rgba(0,0,0,0.7);
+  text-align:center;
+  padding: 0.25rem 0.5rem;
+  background: rgba(0,0,0,0.3);
+  border-radius: 0.4rem;
+  white-space: nowrap;
+  min-height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .player-slot{
+  outline: 2px dashed red;
+}
+
+.player-hand {
+  outline: 2px dashed lime;
+} */
+
+.player-slot:nth-child(2) .player-name {
+  transform: rotate(-90deg);
+  transform-origin: center center;
+}
+
+.player-slot:nth-child(4) .player-name {
+  transform: rotate(90deg);
+  transform-origin: center;
+}
+
+/* Hand Container */
+.hand-container {
+  display: flex;
+  gap: 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+/* Self hand/ Teammate hand - Horizontal Layout */
+.player-hand.teammate, .player-hand.self {
+  flex-direction: row;
+  justify-content: center;
+}
+
+/* Opponent hand- Vertical Layout */
+.player-hand.opponent {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5rem; /* Compensate for fanned cards in 6 card game */
+  align-self: center;
+  gap: 0;
+}
+
+/* General Card Styling */
+.card {
+  width: 7rem;
+  height: 10rem;
+  background-color: white;
+  /* border: 2px solid #333; */
+  border-radius: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 0;
+}
+
+.player-hand.self .card, .player-hand.teammate .card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.player-hand.self .card:hover {
+  transform: translateY(-0.25rem);
+  box-shadow: 0 0.4rem 0.8rem rgba(0,0,0,0.3);
+  border-color: #007acc;
+}
+
+.player-hand.self .card.selected {
+  border-color: #007acc;
+  background-color: #e6f3ff;
+  transform: translateY(-0.5rem) scale(1.05);
+  box-shadow: 0 0.6rem 1.2rem rgba(0, 122, 204, 0.4), 0 0 2rem rgba(0, 122, 204, 0.3);
+  animation: pulse 1.5s infinite;
+  position: relative;
+}
+
+.player-hand.self .card.selected::after {
+  /* content: "Click again to play"; */
+  position: absolute;
+  top: -3rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 122, 204, 0.9);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.3rem;
+  font-size: 1rem;
+  white-space: nowrap;
+  z-index: 1000;
+  animation: fadeInOut 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { border-color: #007acc; }
+  50% { border-color: #00a8ff; }
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Card Back for Other Players */
+.player-hand.opponent .card{
+  transform: rotate(90deg);
+  transform-origin: center;
+  background: linear-gradient(135deg, #2c3e50, #34495e);
+  color: white;
+  cursor: default;
+  /* margin-bottom: -5rem; */
+}
+
+/* Fanning effect for opponent hands in 6 card game */
+.player-area .player-slot:nth-child(2) .player-hand .card {
+  margin-bottom: -5rem;
+}
+
+.player-area .player-slot:nth-child(4) .player-hand .card {
+  margin-bottom: -5rem;
+}
+
+/* Fan effect for self and teammate hands in 9 card game */
+.player-hand.self .card.fan-effect-nine, .player-hand.teammate .card.fan-effect-nine {
+  margin-left: -1rem;
+}
+.player-hand.self.fan-effect-nine, .player-hand.teammate.fan-effect-nine {
+  margin-left: 1rem;
+}
+
+/* Fan effect for self and teammate hands in 12 card game */
+.player-hand.self .card.fan-effect-twelve, .player-hand.teammate .card.fan-effect-twelve {
+  margin-left: -2rem;
+}
+.player-hand.self.fan-effect-twelve, .player-hand.teammate.fan-effect-twelve {
+  margin-left: 2rem;
+}
+
+/* Fan effect for opponent hands in 9 card game */
+.player-hand.opponent .card.fan-effect-nine.fan-effect-nine {
+  margin-bottom: -7rem;
+}
+.player-hand.opponent.fan-effect-nine {
+  margin-bottom: 7rem;
+}
+
+/* Fan effect for opponent hands in 12 card game */
+.player-hand.opponent .card.fan-effect-twelve.fan-effect-twelve {
+  margin-bottom: -8rem;
+}
+.player-hand.opponent.fan-effect-twelve {
+  margin-bottom: 8rem;
+}
+
+/* Responsive Card Sizing */
+@media (max-width: 768px) {
+  /* .card {
+    width: 3.5rem;
+    height: 5rem;
+    font-size: 0.6rem;
+  }
+  
+  .player-name {
+    font-size: 0.9rem;
+  } */
+  
+  /* .hand-container {
+    gap: 0.2rem;
+  } */
+  
+  /* Hide opponent hands on mobile devices */
+  .player-hand.opponent {
+    display: none;
+  }
+
+  .player-hand.opponent .hand-container {
+    display: none;
+  }
+
+  .card {
+    width: 7rem;
+    height: 10rem;
+  }
+
+  .player-hand.self .card, .player-hand.teammate .card {
+    margin-left: -2rem;
+  }
+
+  .player-area .player-slot:nth-child(1) .player-hand, .player-area .player-slot:nth-child(3) .player-hand {
+      margin-left: 2rem;
+    }
+
+    .player-hand.self .card.fan-effect-nine, .player-hand.teammate .card.fan-effect-nine {
+    margin-left: -5rem;
+  }
+  .player-hand.self.fan-effect-nine.fan-effect-nine, .player-hand.teammate.fan-effect-nine.fan-effect-nine {
+    margin-left: 5rem;
+  }
+
+  .player-hand.self .card.fan-effect-twelve, .player-hand.teammate .card.fan-effect-twelve {
+    margin-left: -5.5rem;
+  }
+  .player-hand.self.fan-effect-twelve.fan-effect-twelve, .player-hand.teammate.fan-effect-twelve.fan-effect-twelve {
+    margin-left: 5.5rem;
+  }
+
+  /* .player-hand.self .card, .player-hand.teammate .card {
+    margin-left: -2rem;
+  } */
+}
+
+@media (max-width: 480px) {
+  /* .card {
+    width: 3rem;
+    height: 4.5rem;
+    font-size: 0.55rem;
+    padding: 0.2rem;
+  } */
+  
+  /* .player-name {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.4rem;
+  }
+  
+  .hand-container {
+    gap: 0.15rem;
+  } */
+  
+  /* Hide opponent hands on mobile devices */
+  
+  /* Adjust tooltip for mobile - smaller text and positioning */
+  .player-hand.self .card.selected::after {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.6rem;
+    top: -2.5rem;
+  }
+  
+  /* Adjust vertical text for smaller screens */
+  /* .player-hand.left .player-name,
+  .player-hand.right .player-name {
+    writing-mode: horizontal-tb;
+    text-orientation: initial;
+    margin: 0.25rem 0;
+  }
+  
+  .player-hand.left {
+    flex-direction: column;
+  }
+  
+  .player-hand.right {
+    flex-direction: column-reverse;
+  } */
+}

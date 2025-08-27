@@ -1,0 +1,113 @@
+.scoreboard-main h3 {
+  font-weight: bold;
+  font-size: 2.2rem;
+  margin-bottom: 1.25rem;
+}
+
+
+/* Team Scores */
+.team-score {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 0.25rem;
+}
+
+.score-row {
+  margin-bottom: 0.75rem;
+}
+
+.team-name {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.team-name h4 {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.team-points {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #ffd700;
+}
+
+/* Current Round Info */
+.round-info {
+  width: 100%;
+  text-align: center;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.round-number {
+  font-size: 0.8rem;
+  color: #ccc;
+  margin-bottom: 0.25rem;
+}
+
+.trump-suit {
+  font-size: 0.8rem;
+  color: #ffd700;
+  font-weight: bold;
+}
+
+/* Game Status */
+.game-status {
+  width: 100%;
+  text-align: center;
+  margin-top: 0.25rem;
+  font-size: 0.7rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+/* Winning Team Highlight */
+.team-score.winning {
+  background: rgba(255, 215, 0, 0.2);
+  border: 1px solid rgba(255, 215, 0, 0.5);
+}
+
+.team-score.winning .team-points {
+  color: #fff;
+  text-shadow: 0 0 4px #ffd700;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {  
+  .team-score {
+    padding: 0.2rem 0.4rem;
+    margin-bottom: 0.2rem;
+  }
+  
+  .team-name,
+  .team-points {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .score-board h3 {
+    font-size: 2rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .team-score {
+    padding: 0.15rem 0.3rem;
+    font-size: 1.6rem;
+    margin-bottom: 0.15rem;
+  }
+  
+  .team-name,
+  .team-points {
+    font-size: 0.7rem;
+  }
+}

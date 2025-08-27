@@ -1,0 +1,845 @@
+/* Game Board Layout - CSS Grid 3x3 Layout */
+.game-board {
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  font-family: 'Arial', sans-serif;
+  display: grid;
+  grid-template-columns: 1fr 3fr 1fr;
+  grid-template-rows: 20% 60% 20%;
+  grid-template-areas:
+    "scoreboard  top-player    kicked-cards"
+    "left-player trick-area    right-player"
+    "bottom-left bottom-player bottom-right";
+  gap: 0;
+  /* padding: 1rem; */
+  box-sizing: border-box;
+  overflow: auto;
+  position: relative;
+}
+
+
+.score-board {
+  grid-area: scoreboard;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6)
+  /* padding: 1rem; */
+}
+
+
+
+.trick-area {
+  grid-area: trick-area;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Player area positioning using CSS Grid */
+.player-area {
+  display: contents; 
+}
+
+/* .player-slot {
+  min-width: 30rem;
+} */
+
+/* Bottom (user) player slot */
+.player-area .player-slot:nth-child(1) {
+  grid-area: bottom-player;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+/* Left player slot */
+.player-area .player-slot:nth-child(2) {
+  grid-area: left-player;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: flex-start;
+}
+/* Top (teammate) player slot */
+.player-area .player-slot:nth-child(3) {
+  grid-area: top-player;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+/* Player name for top player goes under hand */
+.player-slot:nth-child(3) .player-name {
+  order: 1;
+}
+/* Right player slot */
+.player-area .player-slot:nth-child(4) {
+  grid-area: right-player;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  
+}
+
+
+/* Hide scoreboard log button on desktop */
+.scoreboard-toggle-log-btn, .scoreboard-leave-btn {
+  display: none;
+}
+
+/* Hide scoreboard kicked deck on desktop */
+.scoreboard-kicked-deck {
+  display: none;
+}
+
+
+/* Log Toggle Button - Bottom Right Corner */
+.log-toggle-button {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  display: block; /* Show on desktop */
+}
+
+.log-toggle-button button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: bold;
+  box-shadow: 0 0.2rem 0.4rem rgba(0,0,0,0.2);
+  transition: background-color 0.3s;
+}
+
+.log-toggle-button button:hover {
+  background-color: #45a049;
+}
+
+.leave-room-button-game {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 1000;
+  display: block; /* Show on desktop */
+}
+
+.leave-room-button-game {
+  background-color: #dc3545; /* Bootstrap danger red */
+  color: white;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: bold;
+  box-shadow: 0 0.2rem 0.4rem rgba(0,0,0,0.2);
+  transition: background-color 0.3s;
+}
+
+.leave-room-button-game:hover {
+  background-color: #c82333; /* Darker red on hover */
+}
+
+
+
+/* Kicked Cards Styles
+------------------------------------------------------------------------------- */
+.kicked-deck {
+  grid-area: kicked-cards;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  max-width: 100%;
+  box-shadow: 0 0.4rem 0.8rem rgba(0,0,0,0.1);
+}
+
+.kicked-deck h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.6rem;
+  text-align: center;
+}
+
+.kicked-cards-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  justify-content: center;
+  align-items: center;
+}
+
+.kicked-deck .card {
+  background-color: #fff;
+  border: 0.2rem solid gold;
+  /* padding: 5px 8px; */
+  border-radius: 0.6rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-width: 4rem;
+  text-align: center;
+  margin-left: -5rem;
+}
+
+/* Player Slot Styling */
+.player-slot {
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 1rem;
+  backdrop-filter: blur(0.5rem);
+  transition: all 0.3s ease;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  /* flex-direction: column; */
+  align-items: center;
+  justify-content: center;
+}
+
+.player-name.active {
+  background-color: rgba(255, 193, 7, 0.9);
+  color: #333;
+  box-shadow: 0 0 1rem rgba(255, 193, 7, 0.6);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.player-slot.active {
+  border: 0.2rem solid gold;
+  box-shadow: 0 0 1rem gold;
+  color: pink;
+  background-color: green
+}
+
+/* User player (bottom) gets green background */
+.player-area .player-slot:nth-child(1) {
+  background-color: rgba(76, 175, 80, 0.2);
+}
+
+/* Private Overlays */
+.private-overlay {
+  position: absolute;
+  top: -4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 152, 0, 0.9);
+  color: white;
+  padding: 0.8rem 1.2rem;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  white-space: nowrap;
+  z-index: 200;
+  box-shadow: 0 0.2rem 0.4rem rgba(0,0,0,0.2);
+}
+
+/* Public Overlay Messages */
+.overlay-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2rem 3rem;
+  border-radius: 1rem;
+  font-size: 1.8rem;
+  font-weight: bold;
+  text-align: center;
+  z-index: 1000;
+  box-shadow: 0 0.4rem 2rem rgba(0,0,0,0.3);
+  animation: fadeInOut 0.5s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* Prompt Container */
+.prompt-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 2rem;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 0.4rem 2rem rgba(0,0,0,0.2);
+  z-index: 500;
+  min-width: 30rem;
+}
+
+.prompt-container h3 {
+  margin: 0 0 1.5rem 0;
+  color: #333;
+  font-size: 1.8rem;
+}
+
+.prompt-buttons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+}
+
+.prompt-buttons button {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.6rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 8rem;
+}
+
+.prompt-buttons button:first-child {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.prompt-buttons button:first-child:hover {
+  background-color: #45a049;
+  transform: translateY(-0.2rem);
+}
+
+.prompt-buttons button:last-child {
+  background-color: #f44336;
+  color: white;
+}
+
+.prompt-buttons button:last-child:hover {
+  background-color: #da190b;
+  transform: translateY(-0.2rem);
+}
+
+/* Log Panel - Slide in from right */
+.log-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 30rem;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(0.1rem);
+  border-left: 0.2rem solid #ccc;
+  z-index: 900;
+  animation: slideInRight 0.3s ease-out;
+  overflow-y: auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.log-panel h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+  font-size: 1.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.log-close-button {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 3rem;
+  height: 3rem;
+  cursor: pointer;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.log-close-button:hover {
+  background-color: #da190b;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .game-board {
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+  
+  .player-slot {
+    padding: 1rem;
+  }
+  
+  .kicked-deck {
+    min-width: 15rem;
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .game-board {
+    /* New mobile grid: 4 rows with middle column bigger for trick area */
+    grid-template-columns: 1fr 4fr 1fr;
+    grid-template-rows: 1.5fr 1fr 4fr 1fr;
+    grid-template-areas:
+      "scoreboard scoreboard scoreboard"
+      "top-player top-player top-player"
+      "left-player trick-area right-player"
+      "bottom-player bottom-player bottom-player";
+    gap: 0;
+    padding: 0;
+  }
+  
+  .player-slot {
+    padding: 0.5rem;
+    min-height: 5rem;
+  }
+  
+  .score-board {
+    grid-area: scoreboard;
+    font-size: 1.2rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    padding: 0.5rem;
+  }
+
+  /* Top row: main content and kicked cards */
+  .scoreboard-top-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+    flex: 1;
+  }
+
+  /* Main scoreboard content takes up available space */
+  .scoreboard-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-right: 2rem;
+  }
+
+  /* Show the scoreboard kicked deck only on mobile */
+  .scoreboard-kicked-deck {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0.25rem;
+  }
+
+  /* Show the scoreboard log button only on mobile - bottom row */
+  .button-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0.25rem;
+    margin-top: 0.5rem;
+  }
+
+  /*
+  .leave-room-button-game {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: bold;
+  box-shadow: 0 0.2rem 0.4rem rgba(0,0,0,0.2);
+  transition: background-color 0.3s;
+}*/
+
+  .button-row button {
+    color: white;
+    border: none;
+    padding: 0.5rem 0.25rem;
+    font-size: 1.4rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    box-shadow: 0 0.2rem 0.4rem rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+  }
+
+  .scoreboard-leave-btn {
+    background-color: #dc3545; /* Bootstrap danger red */
+  }
+
+  .scoreboard-leave-btn:hover {
+    background-color: #c82333; /* Darker red on hover */
+  }
+
+  .scoreboard-toggle-log-btn {
+    background-color: seagreen;
+  }
+
+  /* Hide the original fixed log button on mobile */
+  .log-toggle-button {
+    display: none;
+  }
+
+  /* Hide the original leave room button on mobile */
+  .leave-room-button-game {
+    display: none;
+  }
+
+  /* Hide the original kicked deck on mobile */
+  .kicked-deck {
+    display: none;
+  }
+
+
+  .scoreboard-kicked-deck .kicked-cards-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .scoreboard-kicked-deck .card {
+    width: 6rem;
+    height: 8rem;
+    background-color: #fff;
+    border: 0.1rem solid gold;
+    border-radius: 0.3rem;
+    font-size: 0.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin-top: -5.8rem;
+    box-shadow: 0 0.1rem 0.2rem rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .scoreboard-kicked-deck .card:first-child {
+    margin-top: 0;
+  }
+
+  .scoreboard-log-button button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.3rem;
+    cursor: pointer;
+    font-size: 1.4rem;
+    box-shadow: 0 0.2rem 0.4rem rgba(0,0,0,0.2);
+    transition: background-color 0.3s;
+  }
+
+  .scoreboard-log-button button:hover {
+    background-color: #45a049;
+  }
+
+  .trick-area {
+    grid-area: trick-area;
+  }
+  
+  .trick-card {
+    width: 7rem;
+    height: 10rem;
+  }
+
+  /* Adjust player slot layouts for mobile */
+  .player-area .player-slot:nth-child(2) {
+    grid-area: left-player;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .player-area .player-slot:nth-child(4) {
+    grid-area: right-player;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* .prompt-container {
+    min-width: 25rem;
+    bottom: 15%;
+  } */
+  
+  .log-panel {
+    width: 250px; /* Smaller but still on right side for tablet */
+  }
+}
+
+@media (max-width: 480px) {
+  .game-board {
+    gap: 0.25rem;
+    padding: 0.25rem;
+  }
+  
+  .player-slot {
+    padding: 0.25rem;
+    min-height: 4rem;
+  }
+
+  .overlay-message {
+    font-size: 16px;
+    padding: 15px 20px;
+  }
+  
+  /* .prompt-container {
+    min-width: 200px;
+    padding: 15px;
+  } */
+
+  .prompt-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0.4rem 2rem rgba(0,0,0,0.2);
+    z-index: 500;
+    /* min-width: 30rem; */
+  }
+  
+  /* Further adjust side player layouts for very small screens */
+  .player-area .player-slot:nth-child(2),
+  .player-area .player-slot:nth-child(4) {
+    min-height: 3rem;
+  }
+
+  /* Mobile log panel - slide from top, half screen */
+  .log-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 50vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    backdrop-filter: blur(0.1rem);
+    border-bottom: 0.2rem solid #ccc;
+    border-left: none;
+    z-index: 900;
+    animation: slideInFromTop 0.3s ease-out;
+    overflow-y: auto;
+    padding: 1rem;
+    box-sizing: border-box;
+  }
+
+  .log-panel h3{
+    color: white;
+  }
+
+  @keyframes slideInFromTop {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+  }
+}
+
+/* Lobby and Room Master Styles */
+.waiting-for-players {
+  grid-area: trick-area;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-align: center;
+  padding: 2rem;
+}
+
+.players-in-room ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.players-in-room li {
+  padding: 0.5rem;
+  margin: 0.25rem 0;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+.start-game-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: rgba(0, 255, 0, 0.1);
+  border-radius: 10px;
+  border: 2px solid rgba(0, 255, 0, 0.3);
+}
+
+.start-game-button {
+  background: linear-gradient(135deg, #28a745, #20c997);
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.start-game-button:hover {
+  background: linear-gradient(135deg, #218838, #1ea080);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+}
+
+.start-game-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 10px rgba(40, 167, 69, 0.3);
+}
+
+/* Teammate Selection Styles */
+.teammate-selection {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: rgba(255, 165, 0, 0.1);
+  border: 2px solid rgba(255, 165, 0, 0.3);
+  border-radius: 10px;
+}
+
+.teammate-selection h4 {
+  margin: 0 0 1rem 0;
+  color: #ffa500;
+}
+
+.teammate-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.teammate-button {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
+
+.teammate-button:hover {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.4);
+}
+
+.teammate-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.3);
+}
+
+/* Team Assignments Display */
+.team-assignments {
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: rgba(0, 255, 0, 0.1);
+  border: 2px solid rgba(0, 255, 0, 0.3);
+  border-radius: 10px;
+}
+
+.team-assignments h4 {
+  margin: 0 0 1rem 0;
+  color: #28a745;
+}
+
+.teams-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.team {
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+/* Lobby/Waiting Area Styles */
+.waiting-for-players {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 2rem;
+  border-radius: 15px;
+  margin: 2rem;
+  text-align: center;
+}
+
+.waiting-for-players h3 {
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  color: #FFD700;
+}
+
+.waiting-for-players p {
+  margin: 0.5rem 0;
+  font-size: 1.2rem;
+}
+
+.players-in-room {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  min-width: 300px;
+}
+
+.players-in-room p {
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #FFD700;
+}
+
+.players-in-room ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.players-in-room li {
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 0.5rem 0;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  border-left: 3px solid #4CAF50;
+}
+
+.players-in-room li:last-child {
+  margin-bottom: 1rem;
+}

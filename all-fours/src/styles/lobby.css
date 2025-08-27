@@ -1,0 +1,290 @@
+/* Lobby Styles */
+.game-board.lobby-mode {
+  height: 100vh;
+  overflow-x: hidden;
+}
+
+.lobby-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+  width: 50%;
+}
+
+.waiting-for-players {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+  max-height: 90vh;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 1rem;
+  padding: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-sizing: border-box;
+}
+
+.waiting-for-players h3 {
+  font-size: 2.4rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.waiting-for-players p {
+  font-size: 1.6rem;
+  margin: 0.5rem 0;
+  text-align: center;
+}
+
+/* Room ID, Start Game, and Leave Room Section 
+-------------------------------------------------------------------------------*/
+
+.room-section {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin: 0 5rem;
+  align-items: center;
+  margin: 1rem 0;
+}
+
+.room-section p {
+    font-size: 1.8rem;
+    font-weight: bold;
+}
+
+.leave-room-button {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.4rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.leave-room-button:hover {
+  background-color: #c82333;
+}
+
+.start-game-button {
+  background: #28a745;
+  color: white;
+  border: none;
+  padding: 1.5rem 3rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-top: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.start-game-button:hover {
+  background: #218838;
+}
+
+/* Player count and player llst section 
+-------------------------------------------------------------------------------*/
+
+.lobby-scrollable {
+    overflow-y: auto;
+    flex-grow: 1;
+    scroll-behavior: smooth;
+}
+
+.players-in-room {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.room-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+}
+
+.room-header p {
+  margin: 0;
+  font-size: 1.8rem;
+  text-align: center;
+}
+
+.players-in-room ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.players-in-room li {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  font-size: 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  margin: 0;
+}
+
+.players-in-room ul > li:last-child {
+  margin-bottom: 0 !important;
+}
+
+.players-in-room li.selectable-player {
+  border: 2px solid rgba(255, 255, 0, 0.5);
+  background: rgba(255, 255, 0, 0.1);
+}
+
+.players-in-room li.selectable-player:hover {
+  background: rgba(255, 255, 0, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.teammate-selection-instruction {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(255, 255, 0, 0.1);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 0, 0.3);
+  text-align: center;
+}
+
+.teammate-selection-instruction p {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.team-assignments {
+  width: 100%;
+  padding: 1.5rem;
+  background: rgba(0, 255, 0, 0.1);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  margin:0;
+}
+
+.team-assignments h4 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+.teams-display {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.team {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  text-align: center;
+  font-size: 1.4rem;
+}
+
+.reset-teams-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  width: 100%;
+  transition: background-color 0.3s ease;
+}
+
+.reset-teams-button:hover {
+  background: #c82333;
+}
+
+.teammate-selection {
+  width: 100%;
+  padding: 1.5rem;
+  background: rgba(255, 255, 0, 0.1);
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 0, 0.3);
+}
+
+.teammate-selection h4 {
+  text-align: center;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+
+
+
+
+/* Responsive design */
+@media (max-width: 768px) {
+
+    .lobby-container {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .players-in-room {
+        gap: 3rem;
+    }
+
+    .players-in-room ul {
+        gap: 1rem;
+    }
+
+    .waiting-for-players {
+        padding: 2rem;
+        margin: 1rem;
+    }
+
+    .start-game-button {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-size: 1.6rem;
+        font-weight: bold;
+        margin-top: 1rem;
+        transition: background-color 0.3s ease;
+        text-align: center;
+    }
+
+    .leave-room-button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        font-size: 1.6rem;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+        text-align: center;
+    }
+}

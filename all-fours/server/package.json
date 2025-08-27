@@ -1,0 +1,20 @@
+{
+  "name": "all-fours-server",
+  "version": "1.0.0",
+  "description": "WebSocket server for All Fours card game",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "keywords": ["websocket", "card-game", "all-fours"],
+  "author": "",
+  "license": "ISC"
+}

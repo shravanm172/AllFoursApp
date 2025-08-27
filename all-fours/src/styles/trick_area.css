@@ -1,0 +1,104 @@
+/* Trick Area - Center Grid Layout */
+.trick-area {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-areas:
+    ".    top    ."
+    "left center right"
+    ".   bottom  .";
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: 1fr auto 1fr;
+  gap: 0.5rem;
+  justify-items: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+/* Trick Slot Positioning */
+.trick-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.trick-slot.top {
+  grid-area: top;
+}
+
+.trick-slot.bottom {
+  grid-area: bottom;
+}
+
+.trick-slot.left {
+  grid-area: left;
+}
+
+.trick-slot.right {
+  grid-area: right;
+}
+
+.trick-center {
+  grid-area: center;
+  width: 100%;
+  height: 100%;
+}
+
+/* Trick Card Styling */
+.trick-card {
+  width: 8rem;
+  height: 11rem;
+  background-color: white;
+  /* border: 2px solid #ccc; */
+  border-radius: 8px; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  position: relative;
+}
+
+/* Placeholder styling */
+.trick-card.placeholder {
+  background-color: rgba(255, 255, 255, 0);
+  border: 2px dashed rgba(255, 255, 255, 0);
+  color: rgba(255, 255, 255, 0);
+}
+
+.placeholder-text {
+  font-size: 0.7rem;
+  text-align: center;
+  opacity: 0.7;
+}
+
+.card-text {
+  font-size: 0.8rem;
+  text-align: center;
+  padding: 0.5rem;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Player name under trick cards */
+.trick-card small {
+  position: absolute;
+  bottom: -1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.7rem;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+  white-space: nowrap;
+}
+
+
+@media (max-width: 768px) {
+  .trick-card {
+    width: 7rem;
+    height: 10rem;
+  }
+}

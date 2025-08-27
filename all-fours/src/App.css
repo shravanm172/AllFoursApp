@@ -1,0 +1,302 @@
+/* src/App.css */
+
+/* -----------------------------
+   🌐 Global Resets and Defaults
+------------------------------ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Set base font size: 1rem = 10px */
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  font-size: 1.6rem; /* = 16px */
+  background-color: #f0f4f8;
+  color: black;
+  min-height: 100vh;
+}
+
+/* App container */
+.App {
+  padding: 0;
+  text-align: center;
+}
+
+/* Home Page Styles */
+.home-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 2rem;
+}
+
+h1.title { /* Fours owa */
+  font-size: 5rem;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  text-shadow: 0.4rem 0.4rem 0.4rem rgba(0, 0, 0, 0.3);
+  margin-bottom: 5rem;
+}
+
+.mode-selector h1 {
+  font-size: 4rem;
+  margin-bottom: 3rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.mode-buttons {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Join Room button */
+.mode-button {
+  width: 10rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 1rem;
+  padding: 2rem;
+  color: white;
+  font-size: 1.8rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.mode-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.mode-button p {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  opacity: 0.8;
+  font-weight: normal;
+}
+
+.nickname-container {
+  margin-bottom: 3rem;
+}
+
+.nickname-input {
+  width: 30rem;
+  font-size: 1.6rem;
+  height: 4rem;
+  border-radius: 0.4rem;
+}
+
+.room-id-input {
+  width: 20rem;
+  font-size: 1.6rem;
+  height: 4rem;
+  border-radius: 0.4rem;
+}
+
+.join-room {
+  display: flex;
+  flex-direction: row;
+}
+
+/* Lobby Styles 
+---------------------------------------------------------------------------------------------------*/
+.lobby-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 2rem;
+}
+
+.lobby-screen h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+.lobby-screen button {
+  background: #4caf50;
+  color: white;
+  border: none;
+  padding: 1.5rem 3rem;
+  border-radius: 0.5rem;
+  font-size: 1.8rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.lobby-screen button:hover {
+  background: #45a049;
+}
+
+/* Multiplayer Lobby */
+.multiplayer-lobby {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  color: white;
+  padding: 2rem;
+}
+
+.connection-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 2rem 0;
+  max-width: 30rem;
+  width: 100%;
+}
+
+.connection-form input {
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.connection-form input::placeholder {
+  color: #666;
+}
+
+/* WebSocket Status */
+.websocket-client {
+  margin-top: 2rem;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 0.5rem;
+  display: none;
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.status-indicator {
+  font-size: 1.2rem;
+}
+
+/* Menu messages */
+.error-message {
+  background-color: #ffebee;
+  border: 1px solid #f44336;
+  color: #d32f2f;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.connecting-status {
+  background-color: #e3f2fd;
+  border: 1px solid #2196f3;
+  color: #1976d2;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 4px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .mode-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mode-button {
+    min-width: 25rem;
+  }
+
+  .mode-selector h1 {
+    font-size: 3rem;
+  }
+}
+
+/* Mode Selector Additional Styles */
+.multiplayer-inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.multiplayer-inputs input {
+  padding: 1rem;
+  border: 0.2rem solid #ddd;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  font-family: inherit;
+}
+
+.multiplayer-inputs input:focus {
+  outline: none;
+  border-color: #007acc;
+  box-shadow: 0 0 0.5rem rgba(0, 122, 204, 0.3);
+}
+
+.back-button {
+  position: fixed;
+  top: 2rem;
+  left: 2rem;
+  padding: 1rem 2rem;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s;
+}
+
+.back-button:hover {
+  background-color: #5a6268;
+}
+
+/* Lobby Mode Overrides - Remove grid layout for lobby */
+.game-board.lobby-mode {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  grid-template-columns: unset !important;
+  grid-template-rows: unset !important;
+  grid-template-areas: unset !important;
+  gap: unset !important;
+  min-height: 100vh;
+}
+
+.game-board.lobby-mode .player-area {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100%;
+  max-width: 600px;
+}
