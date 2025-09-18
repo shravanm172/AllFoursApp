@@ -2,6 +2,7 @@
 // Component to handle WebSocket connection to multiplayer server
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
+import { WS_URL } from "../config";   // adjust path if needed
 
 export const WebSocketClient = ({
   onGameUpdate,
@@ -231,7 +232,7 @@ export const WebSocketClient = ({
     // Connect to WebSocket server
     const connectToServer = () => {
       try {
-        wsRef.current = new WebSocket("ws://localhost:8080");
+        wsRef.current = new WebSocket(WS_URL);
 
         wsRef.current.onopen = () => {
           console.log("🔗 Connected to WebSocket server");
