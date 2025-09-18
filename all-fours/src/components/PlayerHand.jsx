@@ -94,12 +94,12 @@ export const PlayerHand = ({
   // State for tracking selected card (for double-click confirmation)
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
 
-  // Auto-clear selection after 3 seconds
+  // Auto-clear selection after 5 seconds
   useEffect(() => {
     if (selectedCardIndex !== null) {
       const timer = setTimeout(() => {
         setSelectedCardIndex(null);
-      }, 3000);
+      }, 5000);
 
       return () => clearTimeout(timer);
     }

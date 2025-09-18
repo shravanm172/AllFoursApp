@@ -118,10 +118,7 @@ export class GUIIO {
     while (this.overlayQueue.length > 0) {
       const message = this.overlayQueue.shift();
       this.broadcastToAll("overlayMessage", { message });
-
-      if (this.overlayQueue.length > 0) {
-        await new Promise((resolve) => setTimeout(resolve, this.overlayDelay));
-      }
+      await new Promise((resolve) => setTimeout(resolve, this.overlayDelay));
     }
 
     this.isProcessingOverlay = false;
@@ -512,7 +509,7 @@ export class GUIIO {
         if (this.overlayQueue.length === 0 && !this.isProcessingOverlay) {
           resolve();
         } else {
-          setTimeout(checkQueue, 100);
+          setTimeout(checkQueue, 1000);
         }
       };
       checkQueue();

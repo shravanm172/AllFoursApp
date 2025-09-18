@@ -80,40 +80,18 @@ export const MultiplayerGameBoard = ({
             break;
 
           case "teamAssignments":
-              console.log("👥 Received team assignments:", newGameState);
-
-              // Helper to get player names from IDs using latest lobbyState
-              const getTeamName = (teamIds) =>
-                teamIds
-                  .map(id => {
-                    const player = (lobbyState?.allPlayers || []).find(p => p.id === id);
-                    return player ? player.name : id;
-                  })
-                  .join(" & ");
-
-              // Set team names in matchState
-              setMatchState(prev => {
-                if (!newGameState.teamAssignments || !(lobbyState?.allPlayers)) return prev;
-                const teamAName = getTeamName(newGameState.teamAssignments.team1);
-                const teamBName = getTeamName(newGameState.teamAssignments.team2);
-                return {
-                  ...prev,
-                  teamA: { ...prev.teamA, name: teamAName },
-                  teamB: { ...prev.teamB, name: teamBName }
-                };
-              });
-
-              setTeamAssignments(newGameState.teamAssignments);
-              // Update lobby state to reflect new canStartGame status
-              setLobbyState((prev) =>
-                prev
-                  ? {
-                      ...prev,
-                      canStartGame: newGameState.canStartGame,
-                    }
-                  : null
-              );
-              break;
+            console.log("👥 Received team assignments:", newGameState);
+            setTeamAssignments(newGameState.teamAssignments);
+            // Update lobby state to reflect new canStartGame status
+            setLobbyState((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    canStartGame: newGameState.canStartGame,
+                  }
+                : null
+            );
+            break;
 
           case "activePlayerChange":
             setActivePlayerId(

@@ -209,24 +209,24 @@
 }
 
 .player-name.active {
-  background-color: rgba(255, 193, 7, 0.9);
-  color: #333;
-  box-shadow: 0 0 1rem rgba(255, 193, 7, 0.6);
+  background-color: rgba(13, 84, 155, 0.9);
+  color: white;
+  box-shadow: 0 0 1rem rgb(152, 167, 193);
   transform: scale(1.05);
   transition: all 0.3s ease;
 }
 
 .player-slot.active {
-  border: 0.2rem solid gold;
-  box-shadow: 0 0 1rem gold;
-  color: pink;
-  background-color: green
+  border: 0.2rem solid white;
+  box-shadow: 0 0 1rem rgb(152, 167, 193);
+  color: black;
+  background-color: #668ac9;
 }
 
 /* User player (bottom) gets green background */
-.player-area .player-slot:nth-child(1) {
+/* .player-area .player-slot:nth-child(1) {
   background-color: rgba(76, 175, 80, 0.2);
-}
+} */
 
 /* Private Overlays */
 .private-overlay {

@@ -27,7 +27,6 @@ export class Player {
 
   addCard(card) {
     this.hand.push(card);
-    this.sortHand(); // Automatically sort hand after adding a card
   }
 
   getHand() {

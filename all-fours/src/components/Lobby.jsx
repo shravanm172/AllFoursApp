@@ -1,5 +1,9 @@
 // Lobby.jsx
 import React from "react";
+import { IoExitOutline } from "react-icons/io5";
+import { FaCrown } from "react-icons/fa6";
+import { IoMdPersonAdd } from "react-icons/io";
+import { FaRedoAlt } from "react-icons/fa";
 import "../styles/lobby.css";
 
 export const Lobby = ({
@@ -17,7 +21,7 @@ export const Lobby = ({
     return (
       <div className="lobby-container">
         <div className="waiting-for-players">
-          <h3>🎮 Connecting to room...</h3>
+          <h3>Connecting to room...</h3>
           <p>Room: {roomId}</p>
         </div>
       </div>
@@ -27,7 +31,7 @@ export const Lobby = ({
   return (
     <div className="lobby-container">
       <div className="waiting-for-players">
-        <h3>🎮 Waiting for game to start...</h3>
+        <h3>Waiting for game to start...</h3>
 
         {/* Leave Room Button */}
         <div className="room-section">
@@ -41,7 +45,7 @@ export const Lobby = ({
               </button>
             )}
           <button className="leave-room-button" onClick={onLeaveRoom}>
-            🚪 Leave Room
+            <IoExitOutline /> Leave Room
           </button>
         </div>
 
@@ -82,7 +86,7 @@ export const Lobby = ({
             !teamAssignments && (
               <div className="teammate-selection-instruction">
                 <p>
-                  👥 Click on a player below to select them as your teammate
+                  <IoMdPersonAdd /> Click on a player below to select them as your teammate
                 </p>
               </div>
             )}
@@ -112,8 +116,8 @@ export const Lobby = ({
                 >
                   {player.name}
                   {isCurrentPlayer && " (You)"}
-                  {isRoomMaster && " 👑"}
-                  {canSelectTeammate && " 👥"}
+                  {isRoomMaster && <FaCrown />}
+                  {canSelectTeammate && <IoMdPersonAdd />}
                 </li>
               );
             })}
@@ -150,7 +154,7 @@ export const Lobby = ({
               {/* Reset teams button for room master */}
               {lobbyState.roomMaster === playerId && (
                 <button className="reset-teams-button" onClick={onResetTeams}>
-                  🔄 Reset Teams
+                  <FaRedoAlt /> Reset Teams
                 </button>
               )}
             </div>

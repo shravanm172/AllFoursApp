@@ -6,6 +6,7 @@ import { ScoreBoard } from "./Scoreboard.jsx";
 import { TrickArea } from "./TrickArea.jsx";
 import { PlayerHand } from "./PlayerHand.jsx";
 import { LogPanel } from "./LogPanel.jsx";
+import { LuBotMessageSquare } from "react-icons/lu";
 
 export const GameBoard = ({ game, guiIO, players }) => {
   // Debugging logs
@@ -234,7 +235,7 @@ export const GameBoard = ({ game, guiIO, players }) => {
       {/* Log Panel */}
       <div className="log-toggle-button">
         <button onClick={() => setShowLog(!showLog)}>
-          {showLog ? "Hide Log" : "Show Log"}
+          {showLog ? <><LuBotMessageSquare /> Hide Log</> : <><LuBotMessageSquare /> Show Log</>}
         </button>
       </div>
       {showLog && <LogPanel log={log} onClose={() => setShowLog(false)} />}

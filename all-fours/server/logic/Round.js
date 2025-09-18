@@ -45,6 +45,7 @@ export class Round {
     // Reset game scores for the new round
     this.teamA.resetGameScore();
     this.teamB.resetGameScore();
+      this.io.showScores(this.teamA, this.teamB); // Update scoreboard after resetting game scores
 
     // Create and shuffle deck
     this.deck = new Deck();
