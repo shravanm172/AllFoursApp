@@ -1,13 +1,23 @@
 import WebSocket, { WebSocketServer } from "ws";
 import { GameController } from "./logic/GameController.js"; // game logic
 import { GUIIO } from "./GUIIO.js"; // custom IO handler
+import http from "http";
 
-const wss = new WebSocketServer({ port: 8080 });
-console.log("🌐 WebSocket server running on ws://localhost:8080");
+// const wss = new WebSocketServer({ port: 8080 });
+// console.log("🌐 WebSocket server running on ws://localhost:8080");
+const PORT = process.env.PORT || 8080;
+const server = http.createServer(); 
+const wss = new WebSocketServer({ server });
+server.listen(PORT, "0.0.0.0", () => {
+  console.log(`🌐 WebSocket server listening on ws://0.0.0.0:${PORT}`);
+});
 
 const gameRooms = {}; // Map: roomId => { players: [], game: GameController }
 
+function heartbeat() { this.isAlive = true; }
 wss.on("connection", (ws) => {
+  ws.isAlive = true;
+  ws.on("pong", heartbeat);
   console.log("📡 New WebSocket connection established");
 
   ws.on("message", async (message) => {
@@ -45,6 +55,9 @@ wss.on("connection", (ws) => {
       }
     } catch (err) {
       console.error("⚠️ Message parse error:", err);
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: "error", payload: { message: "Invalid JSON" } }));
+      }
     }
   });
 
@@ -61,6 +74,21 @@ wss.on("connection", (ws) => {
     cleanupPlayerFromRooms(ws, wasDeliberate);
   });
 });
+
+// Ping every 15s; terminate if no pong -> triggers  cleanup
+const interval = setInterval(() => {
+  wss.clients.forEach((ws) => {
+    if (ws.isAlive === false) return ws.terminate();
+    ws.isAlive = false;
+    ws.ping();
+ });
+}, 15000);
+
+wss.on("close", () => clearInterval(interval));
+
+// Graceful shutdown on platform signals
+process.on("SIGTERM", () => { server.close(() => process.exit(0)); });
+process.on("SIGINT", () => { server.close(() => process.exit(0)); });
 
 // Handler Functions
 async function handleJoinRoom(ws, payload) {

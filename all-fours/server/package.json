@@ -16,5 +16,6 @@
   },
   "keywords": ["websocket", "card-game", "all-fours"],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "engines": { "node": ">=18" }
 }
