@@ -1,5 +1,5 @@
 // MultiplayerGameBoard.jsx
-import React, { useState, useCallback, useReducer } from 'react';
+import React, { useState, useCallback, useReducer, useMemo, useRef, useEffect } from 'react';
 import '../styles/game_board.css';
 import { getCardComponent } from '../utils/getCardComponent.js';
 import { ScoreBoard } from './Scoreboard.jsx';
@@ -94,6 +94,7 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
   const [ui, uiDispatch] = useReducer(uiReducer, initialUIState);
   const [showLog, setShowLog] = useState(false);
 
+  // Destructure UI
   const {
     gameState,
     lobbyState,
@@ -107,6 +108,28 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
     overlayMessage,
     log,
   } = ui;
+
+  const players = gameState?.players || [];
+
+  const viewerIndex = useMemo(() => {
+    return players.findIndex((p) => p.id === playerId);
+  }, [players, playerId]);
+
+  const viewerTeammateId = useMemo(() => {
+    if (viewerIndex < 0) return null;
+    const teammateIndex =
+      viewerIndex === 0
+        ? 2
+        : viewerIndex === 2
+          ? 0
+          : viewerIndex === 1
+            ? 3
+            : viewerIndex === 3
+              ? 1
+              : null;
+
+    return teammateIndex != null ? (players[teammateIndex]?.id ?? null) : null;
+  }, [players, viewerIndex]);
 
   // Helper function to convert plain card object to Card instance
   const createCardInstance = (cardData) => {
@@ -300,9 +323,24 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
     uiDispatch({ type: 'ADD_LOG', payload: msg });
   };
 
+  const overlayTimerRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
+    };
+  }, []);
+
   const handleOverlayMessage = (msg) => {
+    // doesn't leak
     uiDispatch({ type: 'SET_OVERLAY', payload: msg });
-    setTimeout(() => uiDispatch({ type: 'SET_OVERLAY', payload: '' }), 3000);
+
+    if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
+
+    overlayTimerRef.current = setTimeout(() => {
+      uiDispatch({ type: 'SET_OVERLAY', payload: '' });
+      overlayTimerRef.current = null;
+    }, 3000);
   };
 
   const [wsClient, setWsClient] = useState(null);
@@ -461,75 +499,46 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
         />
       )}
 
+      {/* Player Area */}
       <div className="player-area">
-        {gameState?.players &&
-          (() => {
-            // Calculate the current viewing player's teammate ID
-            const currentPlayerIndex = gameState.players.findIndex((p) => p.id === playerId);
-            let viewerTeammateId = null;
+        {players.map((player, index) => {
+          const isActive = player.id === activePlayerId;
+          const isPromptingCard = cardPrompt?.playerId === player.id;
+          const isSelf = player.id === playerId;
 
-            // Teammates are: 0&2, 1&3
-            if (currentPlayerIndex === 0 && gameState.players[2]) {
-              viewerTeammateId = gameState.players[2].id;
-            } else if (currentPlayerIndex === 2 && gameState.players[0]) {
-              viewerTeammateId = gameState.players[0].id;
-            } else if (currentPlayerIndex === 1 && gameState.players[3]) {
-              viewerTeammateId = gameState.players[3].id;
-            } else if (currentPlayerIndex === 3 && gameState.players[1]) {
-              viewerTeammateId = gameState.players[1].id;
-            }
+          const isTeammate = player.id === viewerTeammateId;
 
-            console.log(
-              `👁️ Viewer ${playerId} at index ${currentPlayerIndex}, teammate ID: ${viewerTeammateId}`
-            );
+          return (
+            <div key={player.id} className={`player-slot ${isActive ? 'active' : ''}`}>
+              <div className={`player-name ${isActive ? 'active' : ''}`}>
+                {renderPlayerName(player)}
+              </div>
 
-            return gameState.players.map((player, index) => {
-              const isActive = player.id === activePlayerId;
-              const isPromptingCard = cardPrompt?.playerId === player.id;
-              const isSelf = player.id === playerId;
-
-              // Determine if this player is the viewer's teammate
-              // Teammates: 0&2 are teammates, 1&3 are teammates
-              const isTeammate = player.id === viewerTeammateId;
-
-              // Debug log for teammate relationships
-              console.log(
-                `🤝DEBUGGING SHOW TEAMMATE HANDS: Player at index ${index} (${player.name}): viewerTeammateId = ${viewerTeammateId}, isTeammate = ${isTeammate}, handSize = ${player.hand?.length || 0}, hasHandData = ${!!player.hand}`
-              );
-              return (
-                <div key={player.id} className={`player-slot ${isActive ? 'active' : ''}`}>
-                  <div className={`player-name ${isActive ? 'active' : ''}`}>
-                    {renderPlayerName(player)}
-                  </div>
-
-                  <PlayerHand
-                    player={{
-                      getId: () => player.id,
-                      getName: () => player.name,
-                      getHand: () => player.hand || [],
-                    }}
-                    isPromptingCard={isPromptingCard && isSelf}
-                    onCardClick={(index) => {
-                      if (isPromptingCard && isSelf) {
-                        handleCardClick(index);
-                      }
-                    }}
-                    selfId={playerId}
-                    teammateId={viewerTeammateId}
-                    layout={isTeammate ? 'teammate' : 'opponent'}
-                    playerIndex={index}
-                    isBeggingPhase={gameState.isBeggingPhase || false}
-                    beggarId={gameState.beggarId || null}
-                    dealerId={
-                      gameState.currentDealer
-                        ? gameState.players.find((p) => p.name === gameState.currentDealer)?.id
-                        : null
-                    }
-                  />
-                </div>
-              );
-            });
-          })()}
+              <PlayerHand
+                player={{
+                  getId: () => player.id,
+                  getName: () => player.name,
+                  getHand: () => player.hand || [],
+                }}
+                isPromptingCard={isPromptingCard && isSelf}
+                onCardClick={(i) => {
+                  if (isPromptingCard && isSelf) handleCardClick(i);
+                }}
+                selfId={playerId}
+                teammateId={viewerTeammateId}
+                layout={isTeammate ? 'teammate' : 'opponent'}
+                playerIndex={index}
+                isBeggingPhase={gameState?.isBeggingPhase || false}
+                beggarId={gameState?.beggarId || null}
+                dealerId={
+                  gameState?.currentDealer
+                    ? players.find((p) => p.name === gameState.currentDealer)?.id
+                    : null
+                }
+              />
+            </div>
+          );
+        })}
       </div>
 
       {/* Trick Area - only show when in game */}
@@ -538,7 +547,6 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
       {/* Player prompts - only show when in game */}
       {gameState && prompt && prompt.playerId === playerId && (
         <div className="prompt-container">
-          {console.log('🟢 Rendering prompt for current player')}
           <h3>🗣️ {prompt.promptText}</h3>
           <div className="prompt-buttons">
             <button onClick={() => handlePlayerResponse('yes')}>

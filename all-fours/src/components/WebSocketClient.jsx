@@ -1,4 +1,4 @@
-// import React, { useState, useEffect, useRef, useCallback } from 'react';ebSocketClient.jsx
+// WebSocketClient.jsx
 // Component to handle WebSocket connection to multiplayer server
 // Protocol adapter
 // returns null
@@ -11,33 +11,136 @@ export const WebSocketClient = ({
   roomId,
   playerId,
   playerName,
-  onClientReady, // New callback to expose client functions
-  onError, // New callback for error handling
+  onClientReady,
+  onError,
 }) => {
   const [isConnected, setIsConnected] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState('Disconnected');
+
   const wsRef = useRef(null);
 
+  // Keep latest props in refs (avoids stale closures)
   const playerNameRef = useRef(playerName);
-
   useEffect(() => {
     playerNameRef.current = playerName;
   }, [playerName]);
 
   const onGameUpdateRef = useRef(onGameUpdate);
-
   useEffect(() => {
     onGameUpdateRef.current = onGameUpdate;
   }, [onGameUpdate]);
 
   const onErrorRef = useRef(onError);
-
   useEffect(() => {
     onErrorRef.current = onError;
   }, [onError]);
 
+  const hasJoinedRef = useRef(false);
+
+  // ===== Reconnect state =====
+  const manualCloseRef = useRef(false); // true when we *intend* to close (leave/unmount/unload)
+  const reconnectAttemptRef = useRef(0);
+  const reconnectTimerRef = useRef(null);
+
+  const clearReconnectTimer = () => {
+    if (reconnectTimerRef.current) {
+      clearTimeout(reconnectTimerRef.current);
+      reconnectTimerRef.current = null;
+    }
+  };
+
+  const notifyError = (msg, err) => {
+    // Keep this minimal; you said you'll clean logs later
+    if (msg) setConnectionStatus(`Error: ${msg}`);
+    onErrorRef.current?.(msg || 'WebSocket error');
+    // Optional extra logging for dev
+    // console.error(msg, err);
+  };
+
+  // ===== All outbound messages go through this helper ======
+  const send = useCallback((type, payload) => {
+    const ws = wsRef.current;
+
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      // In production, you'd probably show a toast; for now just no-op.
+      // console.warn(`Cannot send ${type} — socket not open`);
+      return false;
+    }
+
+    ws.send(JSON.stringify({ type, payload }));
+    return true;
+  }, []);
+
+  const sendStartGame = useCallback(() => {
+    // Optional: require joined before allowing “start”
+    if (!hasJoinedRef.current) return false;
+    return send('startGame', { roomId, playerId });
+  }, [send, roomId, playerId]);
+
+  const sendSelectTeammate = useCallback(
+    (teammateId) => {
+      if (!hasJoinedRef.current) return false;
+      return send('selectTeammate', { roomId, playerId, teammateId });
+    },
+    [send, roomId, playerId]
+  );
+
+  const sendResetTeams = useCallback(() => {
+    if (!hasJoinedRef.current) return false;
+    return send('resetTeams', { roomId, playerId });
+  }, [send, roomId, playerId]);
+
+  const sendLeaveRoom = useCallback(() => {
+    // leaving is intentional → prevent reconnect
+    manualCloseRef.current = true;
+    clearReconnectTimer();
+    hasJoinedRef.current = false;
+    return send('leaveRoom', { roomId, playerId });
+  }, [send, roomId, playerId]);
+
+  const sendPlayerResponse = useCallback(
+    (response) => {
+      if (!hasJoinedRef.current) return false;
+      return send('playerResponse', { roomId, playerId, response });
+    },
+    [send, roomId, playerId]
+  );
+
+  const sendCardPlayed = useCallback(
+    (cardIndex) => {
+      if (!hasJoinedRef.current) return false;
+      return send('cardPlayed', { roomId, playerId, cardIndex });
+    },
+    [send, roomId, playerId]
+  );
+
+  // Expose client functions to parent component
   useEffect(() => {
-    // Define handleServerMessage inside useEffect to avoid dependency issues
+    onClientReady?.({
+      sendPlayerResponse,
+      sendCardPlayed,
+      sendStartGame,
+      sendSelectTeammate,
+      sendResetTeams,
+      sendLeaveRoom,
+    });
+  }, [
+    onClientReady,
+    sendPlayerResponse,
+    sendCardPlayed,
+    sendStartGame,
+    sendSelectTeammate,
+    sendResetTeams,
+    sendLeaveRoom,
+  ]);
+
+  // Main effect: connect + (re)join
+  useEffect(() => {
+    if (!roomId || !playerId) return;
+
+    let didUnload = false;
+
+    // ----------Handle Message----------
     const handleMessage = (data) => {
       const { type, payload } = data || {};
       if (!type) return;
@@ -46,9 +149,7 @@ export const WebSocketClient = ({
         case 'joinedRoom':
           if (!payload) return;
 
-          console.log('✅ Successfully joined room:', payload);
           setConnectionStatus(`Connected to room ${payload.roomId}`);
-          // Update game state with lobby information
 
           onGameUpdateRef.current?.({
             type: 'lobby',
@@ -59,43 +160,35 @@ export const WebSocketClient = ({
             roomMaster: payload.roomMaster,
             canStartGame: payload.canStartGame,
           });
-
           break;
 
         case 'playerListUpdate':
           if (!payload) return;
-          console.log('👥 Player list updated:', payload);
-          // Update lobby state with new player list
 
           onGameUpdateRef.current?.({
             type: 'lobby',
             roomId: payload.roomId,
             playersInRoom: payload.playersInRoom,
             allPlayers: payload.allPlayers || [],
-            gameStarted: false, // Still in lobby if we're getting player list updates
+            gameStarted: false,
             roomMaster: payload.roomMaster,
             canStartGame: payload.canStartGame,
           });
-
           break;
 
         case 'teamAssignments':
           if (!payload) return;
-          console.log('👥 Team assignments updated:', payload);
 
           onGameUpdateRef.current?.({
             type: 'teamAssignments',
             teamAssignments: payload.teamAssignments,
             canStartGame: payload.canStartGame,
           });
-
           break;
 
         case 'gameStarted':
           if (!payload) return;
-          console.log('🎮 Game started:', payload);
           setConnectionStatus('Game Started');
-          // Trigger game state update when game starts
 
           onGameUpdateRef.current?.({
             gameStarted: true,
@@ -103,303 +196,249 @@ export const WebSocketClient = ({
             roomId: payload.roomId,
             yourPlayerId: payload.yourPlayerId || playerId,
           });
-
           break;
 
         case 'logMessage':
-          console.log('📝 Log message:', payload.message);
-
           onGameUpdateRef.current?.({
             type: 'logMessage',
-            message: payload.message,
+            message: payload?.message,
           });
-
           break;
 
         case 'overlayMessage':
-          console.log('📢 Overlay message:', payload.message);
-
           onGameUpdateRef.current?.({
             type: 'overlayMessage',
-            message: payload.message,
+            message: payload?.message,
           });
-
           break;
 
         case 'gameState':
-          console.log('🎲 Game state update:', payload);
-
           onGameUpdateRef.current?.(payload);
-
           break;
 
         case 'activePlayerChange':
-          console.log('👆 Active player changed:', payload);
-
           onGameUpdateRef.current?.({
             type: 'activePlayerChange',
-            activePlayerId: payload.playerId,
+            activePlayerId: payload?.playerId,
           });
-
           break;
 
         case 'trickState':
-          console.log('🎯 Trick state update:', payload);
-
           onGameUpdateRef.current?.({
             type: 'trickState',
-            playedCards: payload.playedCards,
+            playedCards: payload?.playedCards,
           });
-
           break;
 
         case 'kickedCard':
-          console.log('🃏 Kicked card:', payload);
-
           onGameUpdateRef.current?.({
             type: 'kickedCard',
-            card: payload.card,
+            card: payload?.card,
           });
-
           break;
 
         case 'clearKickedCards':
-          console.log('🧼 Clear kicked cards');
-
           onGameUpdateRef.current?.({ type: 'clearKickedCards' });
-
           break;
 
         case 'scores':
           if (!payload) return;
-          console.log('📊 Scores update:', payload);
-
           onGameUpdateRef.current?.({
             type: 'scores',
             teamA: payload.teamA,
             teamB: payload.teamB,
           });
-
           break;
 
         case 'playerPrompt':
           if (!payload) return;
-          console.log('🤔 Player prompt:', payload);
-
           onGameUpdateRef.current?.({
             type: 'playerPrompt',
             promptText: payload.promptText,
             buttonOptions: payload.buttonOptions,
             playerId: payload.playerId,
           });
-
           break;
 
         case 'cardPrompt':
           if (!payload) return;
-          console.log('🃏 Card prompt:', payload);
-
           onGameUpdateRef.current?.({
             type: 'cardPrompt',
             hand: payload.hand,
             playerId: payload.playerId,
           });
-
           break;
-        case 'error':
-          if (!payload) return;
-          console.error('❌ Server error:', payload.message);
-          setConnectionStatus(`Error: ${payload.message}`);
-          // Call error callback if provided
-          onErrorRef.current?.(payload.message);
 
+        case 'error':
+          notifyError(payload?.message || 'Server error');
           break;
 
         case 'leftRoom':
-          console.log('👋 Left room successfully:', payload);
-
           onGameUpdateRef.current?.({
             type: 'leftRoom',
-            message: payload.message,
+            message: payload?.message,
           });
-
           break;
 
         case 'gameEnded':
-          console.log('🏁 Game ended:', payload);
-
           onGameUpdateRef.current?.({
             type: 'gameEnded',
-            reason: payload.reason,
-            message: payload.message,
+            reason: payload?.reason,
+            message: payload?.message,
           });
-
           break;
 
         default:
-          console.log('❓ Unknown message type:', type, payload);
+          // ignore unknown types in prod
+          break;
       }
     };
 
-    // Define joinRoom inside useEffect
+    // ------Join Room------
     const joinRoomNow = () => {
-      if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-        const message = {
-          type: 'joinRoom',
-          payload: {
-            roomId,
-            playerId,
-            playerName: playerNameRef.current,
-          },
-        };
+      if (hasJoinedRef.current) return;
 
-        wsRef.current.send(JSON.stringify(message));
+      const ws = wsRef.current;
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        hasJoinedRef.current = true;
+        ws.send(
+          JSON.stringify({
+            type: 'joinRoom',
+            payload: { roomId, playerId, playerName: playerNameRef.current },
+          })
+        );
       }
     };
 
-    // Connect to WebSocket server
+    // -----Reconnect scheduler-----
+    const scheduleReconnect = (reason) => {
+      if (manualCloseRef.current) return; // intentional close: do not reconnect
+      clearReconnectTimer();
+
+      const attempt = reconnectAttemptRef.current;
+      const delay = Math.min(8000, 500 * Math.pow(2, attempt)); // 0.5s,1s,2s,4s,8s cap
+      reconnectAttemptRef.current = attempt + 1;
+
+      setConnectionStatus(
+        `Reconnecting (${reconnectAttemptRef.current})...${reason ? ` ${reason}` : ''}`
+      );
+
+      reconnectTimerRef.current = setTimeout(() => {
+        connectToServer(); // re-init socket
+      }, delay);
+    };
+
+    // -----Connect to WebSocket server-----
     const connectToServer = () => {
       try {
+        // (Re)connect is never “manual” by itself
+        // manualCloseRef is only set true on unmount/leave/unload
+        setConnectionStatus('Connecting...');
+        hasJoinedRef.current = false;
+
+        // Close any existing socket before creating a new one
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
+          wsRef.current.close(1000, 'reconnect-replace');
+        }
+
         wsRef.current = new WebSocket(WS_URL);
 
         wsRef.current.onopen = () => {
-          console.log('🔗 Connected to WebSocket server');
           setIsConnected(true);
           setConnectionStatus('Connected');
 
-          // Join room when connected
-          if (roomId && playerId && playerNameRef.current) {
-            joinRoomNow();
-          }
+          // Connection is healthy again → reset attempts
+          reconnectAttemptRef.current = 0;
+          clearReconnectTimer();
+
+          // Join after open
+          joinRoomNow();
         };
 
         wsRef.current.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
-            console.log('📨 Received from server:', data);
-
-            // Handle different message types
             handleMessage(data);
-          } catch (error) {
-            console.error('❌ Failed to parse server message:', error);
+          } catch (err) {
+            notifyError('Failed to parse server message', err);
           }
         };
 
         wsRef.current.onclose = (event) => {
-          console.log('📡 WebSocket connection closed', event);
           setIsConnected(false);
+
+          // If we intentionally closed, don't reconnect.
+          if (manualCloseRef.current) {
+            setConnectionStatus('Disconnected');
+            return;
+          }
+
+          // Unexpected close → try reconnect
+          // Note: code 1000 is normal close; 1006 is common abnormal close
+          const code = event?.code;
+          const shouldReconnect = code !== 1000;
+
           setConnectionStatus('Disconnected');
 
-          // No automatic reconnection - any disconnect is treated as leaving
-          console.log('🔌 Connection closed, player has left');
+          if (shouldReconnect) {
+            scheduleReconnect(code ? `(code ${code})` : '');
+          }
         };
 
-        wsRef.current.onerror = (error) => {
-          console.error('❌ WebSocket error:', error);
-          setConnectionStatus('Error');
+        wsRef.current.onerror = (err) => {
+          // onerror often fires before onclose; we still let onclose handle reconnect
+          notifyError('WebSocket error', err);
         };
-      } catch (error) {
-        console.error('❌ Failed to connect to WebSocket:', error);
-        setConnectionStatus('Connection Failed');
+      } catch (err) {
+        notifyError('Failed to connect to WebSocket', err);
+        scheduleReconnect('(connect exception)');
       }
     };
 
+    // When room/player changes, treat as a fresh session.
+    manualCloseRef.current = false;
+    reconnectAttemptRef.current = 0;
+    clearReconnectTimer();
+
     connectToServer();
 
-    // Handle page unload to properly close connection
+    // ----------Handle page unload to properly close connection-----------
     const handleBeforeUnload = () => {
       if (wsRef.current) {
-        // Close the WebSocket with normal closure code
-        // The server will detect this as a deliberate departure
-        wsRef.current.close(1000, 'User left');
+        didUnload = true;
+        manualCloseRef.current = true;
+        clearReconnectTimer();
+        wsRef.current.close(1000, 'page-unload');
       }
     };
 
     window.addEventListener('beforeunload', handleBeforeUnload);
 
-    // Cleanup on unmount
+    // Cleanup on unmount / dependency change
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
+
+      // Mark as intentional close so onclose doesn't reconnect
+      manualCloseRef.current = true;
+      clearReconnectTimer();
+      hasJoinedRef.current = false;
+
       if (wsRef.current) {
-        wsRef.current.close(1000, 'Component unmounted');
+        wsRef.current.onopen = null;
+        wsRef.current.onmessage = null;
+        wsRef.current.onclose = null;
+        wsRef.current.onerror = null;
+
+        const closeReason = didUnload ? 'page-unload' : 'component-unmount';
+        try {
+          wsRef.current.close(1000, closeReason);
+        } catch {
+          // ignore
+        }
+        wsRef.current = null;
       }
     };
-  }, [roomId, playerId]); // <- dependency array
-
-  const send = useCallback((type, payload) => {
-    const ws = wsRef.current;
-
-    if (!ws || ws.readyState !== WebSocket.OPEN) {
-      console.warn(`❌ Cannot send ${type} — socket not open`);
-      return false;
-    }
-
-    ws.send(JSON.stringify({ type, payload }));
-    return true;
-  }, []);
-
-  const sendStartGame = useCallback(() => {
-    send('startGame', { roomId, playerId });
-  }, [send, roomId, playerId]);
-
-  const sendSelectTeammate = useCallback(
-    (teammateId) => {
-      send('selectTeammate', { roomId, playerId, teammateId });
-    },
-    [send, roomId, playerId]
-  );
-
-  const sendResetTeams = useCallback(() => {
-    send('resetTeams', { roomId, playerId });
-  }, [send, roomId, playerId]);
-
-  const sendLeaveRoom = useCallback(() => {
-    send('leaveRoom', { roomId, playerId });
-  }, [send, roomId, playerId]);
-
-  const sendPlayerResponse = useCallback(
-    (response) => {
-      send('playerResponse', {
-        roomId,
-        playerId,
-        response,
-      });
-    },
-    [send, roomId, playerId]
-  );
-
-  const sendCardPlayed = useCallback(
-    (cardIndex) => {
-      send('cardPlayed', {
-        roomId,
-        playerId,
-        cardIndex,
-      });
-    },
-    [send, roomId, playerId]
-  );
-
-  // Expose client functions to parent component
-  useEffect(() => {
-    if (onClientReady) {
-      onClientReady({
-        sendPlayerResponse,
-        sendCardPlayed,
-        sendStartGame,
-        sendSelectTeammate,
-        sendResetTeams,
-        sendLeaveRoom,
-      });
-    }
-  }, [
-    onClientReady,
-    sendPlayerResponse,
-    sendCardPlayed,
-    sendStartGame,
-    sendSelectTeammate,
-    sendResetTeams,
-    sendLeaveRoom,
-  ]);
+  }, [roomId, playerId]); // keep as-is
 
   return null;
 };
