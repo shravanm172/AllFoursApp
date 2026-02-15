@@ -1,8 +1,9 @@
 // import React, { useState, useEffect, useRef, useCallback } from 'react';ebSocketClient.jsx
 // Component to handle WebSocket connection to multiplayer server
+// returns null
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
-import { WS_URL } from "../config";   // adjust path if needed
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { WS_URL } from '../config'; // adjust path if needed
 
 export const WebSocketClient = ({
   onGameUpdate,
@@ -13,7 +14,7 @@ export const WebSocketClient = ({
   onError, // New callback for error handling
 }) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState("Disconnected");
+  const [connectionStatus, setConnectionStatus] = useState('Disconnected');
   const wsRef = useRef(null);
 
   useEffect(() => {
@@ -22,13 +23,13 @@ export const WebSocketClient = ({
       const { type, payload } = data;
 
       switch (type) {
-        case "joinedRoom":
-          console.log("✅ Successfully joined room:", payload);
+        case 'joinedRoom':
+          console.log('✅ Successfully joined room:', payload);
           setConnectionStatus(`Connected to room ${payload.roomId}`);
           // Update game state with lobby information
           if (onGameUpdate && payload) {
             onGameUpdate({
-              type: "lobby",
+              type: 'lobby',
               roomId: payload.roomId,
               playersInRoom: payload.playersInRoom,
               allPlayers: payload.allPlayers || [],
@@ -39,12 +40,12 @@ export const WebSocketClient = ({
           }
           break;
 
-        case "playerListUpdate":
-          console.log("👥 Player list updated:", payload);
+        case 'playerListUpdate':
+          console.log('👥 Player list updated:', payload);
           // Update lobby state with new player list
           if (onGameUpdate && payload) {
             onGameUpdate({
-              type: "lobby",
+              type: 'lobby',
               roomId: payload.roomId,
               playersInRoom: payload.playersInRoom,
               allPlayers: payload.allPlayers || [],
@@ -55,20 +56,20 @@ export const WebSocketClient = ({
           }
           break;
 
-        case "teamAssignments":
-          console.log("👥 Team assignments updated:", payload);
+        case 'teamAssignments':
+          console.log('👥 Team assignments updated:', payload);
           if (onGameUpdate && payload) {
             onGameUpdate({
-              type: "teamAssignments",
+              type: 'teamAssignments',
               teamAssignments: payload.teamAssignments,
               canStartGame: payload.canStartGame,
             });
           }
           break;
 
-        case "gameStarted":
-          console.log("🎮 Game started:", payload);
-          setConnectionStatus("Game Started");
+        case 'gameStarted':
+          console.log('🎮 Game started:', payload);
+          setConnectionStatus('Game Started');
           // Trigger game state update when game starts
           if (onGameUpdate && payload) {
             onGameUpdate({
@@ -80,86 +81,86 @@ export const WebSocketClient = ({
           }
           break;
 
-        case "logMessage":
-          console.log("📝 Log message:", payload.message);
+        case 'logMessage':
+          console.log('📝 Log message:', payload.message);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "logMessage",
+              type: 'logMessage',
               message: payload.message,
             });
           }
           break;
 
-        case "overlayMessage":
-          console.log("📢 Overlay message:", payload.message);
+        case 'overlayMessage':
+          console.log('📢 Overlay message:', payload.message);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "overlayMessage",
+              type: 'overlayMessage',
               message: payload.message,
             });
           }
           break;
 
-        case "gameState":
-          console.log("🎲 Game state update:", payload);
+        case 'gameState':
+          console.log('🎲 Game state update:', payload);
           if (onGameUpdate) {
             onGameUpdate(payload);
           }
           break;
 
-        case "activePlayerChange":
-          console.log("👆 Active player changed:", payload);
+        case 'activePlayerChange':
+          console.log('👆 Active player changed:', payload);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "activePlayerChange",
+              type: 'activePlayerChange',
               activePlayerId: payload.playerId,
             });
           }
           break;
 
-        case "trickState":
-          console.log("🎯 Trick state update:", payload);
+        case 'trickState':
+          console.log('🎯 Trick state update:', payload);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "trickState",
+              type: 'trickState',
               playedCards: payload.playedCards,
             });
           }
           break;
 
-        case "kickedCard":
-          console.log("🃏 Kicked card:", payload);
+        case 'kickedCard':
+          console.log('🃏 Kicked card:', payload);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "kickedCard",
+              type: 'kickedCard',
               card: payload.card,
             });
           }
           break;
 
-        case "clearKickedCards":
-          console.log("🧼 Clear kicked cards");
+        case 'clearKickedCards':
+          console.log('🧼 Clear kicked cards');
           if (onGameUpdate) {
-            onGameUpdate({ type: "clearKickedCards" });
+            onGameUpdate({ type: 'clearKickedCards' });
           }
           break;
 
-        case "scores":
-          console.log("📊 Scores update:", payload);
+        case 'scores':
+          console.log('📊 Scores update:', payload);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "scores",
+              type: 'scores',
               teamA: payload.teamA,
               teamB: payload.teamB,
             });
           }
           break;
 
-        case "playerPrompt":
-          console.log("🤔 Player prompt:", payload);
+        case 'playerPrompt':
+          console.log('🤔 Player prompt:', payload);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "playerPrompt",
+              type: 'playerPrompt',
               promptText: payload.promptText,
               buttonOptions: payload.buttonOptions,
               playerId: payload.playerId,
@@ -167,18 +168,18 @@ export const WebSocketClient = ({
           }
           break;
 
-        case "cardPrompt":
-          console.log("🃏 Card prompt:", payload);
+        case 'cardPrompt':
+          console.log('🃏 Card prompt:', payload);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "cardPrompt",
+              type: 'cardPrompt',
               hand: payload.hand,
               playerId: payload.playerId,
             });
           }
           break;
-        case "error":
-          console.error("❌ Server error:", payload.message);
+        case 'error':
+          console.error('❌ Server error:', payload.message);
           setConnectionStatus(`Error: ${payload.message}`);
           // Call error callback if provided
           if (onError) {
@@ -186,21 +187,21 @@ export const WebSocketClient = ({
           }
           break;
 
-        case "leftRoom":
-          console.log("👋 Left room successfully:", payload);
+        case 'leftRoom':
+          console.log('👋 Left room successfully:', payload);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "leftRoom",
+              type: 'leftRoom',
               message: payload.message,
             });
           }
           break;
 
-        case "gameEnded":
-          console.log("🏁 Game ended:", payload);
+        case 'gameEnded':
+          console.log('🏁 Game ended:', payload);
           if (onGameUpdate) {
             onGameUpdate({
-              type: "gameEnded",
+              type: 'gameEnded',
               reason: payload.reason,
               message: payload.message,
             });
@@ -208,7 +209,7 @@ export const WebSocketClient = ({
           break;
 
         default:
-          console.log("❓ Unknown message type:", type, payload);
+          console.log('❓ Unknown message type:', type, payload);
       }
     };
 
@@ -216,7 +217,7 @@ export const WebSocketClient = ({
     const joinRoomNow = () => {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         const message = {
-          type: "joinRoom",
+          type: 'joinRoom',
           payload: {
             roomId,
             playerId,
@@ -224,7 +225,7 @@ export const WebSocketClient = ({
           },
         };
 
-        console.log("🚪 Joining room:", message);
+        console.log('🚪 Joining room:', message);
         wsRef.current.send(JSON.stringify(message));
       }
     };
@@ -235,9 +236,9 @@ export const WebSocketClient = ({
         wsRef.current = new WebSocket(WS_URL);
 
         wsRef.current.onopen = () => {
-          console.log("🔗 Connected to WebSocket server");
+          console.log('🔗 Connected to WebSocket server');
           setIsConnected(true);
-          setConnectionStatus("Connected");
+          setConnectionStatus('Connected');
 
           // Join room when connected
           if (roomId && playerId && playerName) {
@@ -248,31 +249,31 @@ export const WebSocketClient = ({
         wsRef.current.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
-            console.log("📨 Received from server:", data);
+            console.log('📨 Received from server:', data);
 
             // Handle different message types
             handleMessage(data);
           } catch (error) {
-            console.error("❌ Failed to parse server message:", error);
+            console.error('❌ Failed to parse server message:', error);
           }
         };
 
         wsRef.current.onclose = (event) => {
-          console.log("📡 WebSocket connection closed", event);
+          console.log('📡 WebSocket connection closed', event);
           setIsConnected(false);
-          setConnectionStatus("Disconnected");
+          setConnectionStatus('Disconnected');
 
           // No automatic reconnection - any disconnect is treated as leaving
-          console.log("🔌 Connection closed, player has left");
+          console.log('🔌 Connection closed, player has left');
         };
 
         wsRef.current.onerror = (error) => {
-          console.error("❌ WebSocket error:", error);
-          setConnectionStatus("Error");
+          console.error('❌ WebSocket error:', error);
+          setConnectionStatus('Error');
         };
       } catch (error) {
-        console.error("❌ Failed to connect to WebSocket:", error);
-        setConnectionStatus("Connection Failed");
+        console.error('❌ Failed to connect to WebSocket:', error);
+        setConnectionStatus('Connection Failed');
       }
     };
 
@@ -283,26 +284,26 @@ export const WebSocketClient = ({
       if (wsRef.current) {
         // Close the WebSocket with normal closure code
         // The server will detect this as a deliberate departure
-        wsRef.current.close(1000, "User left");
+        wsRef.current.close(1000, 'User left');
       }
     };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     // Cleanup on unmount
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener('beforeunload', handleBeforeUnload);
       if (wsRef.current) {
-        wsRef.current.close(1000, "Component unmounted");
+        wsRef.current.close(1000, 'Component unmounted');
       }
     };
-  }, [roomId, playerId, playerName, onGameUpdate]);
+  }, [roomId, playerId, playerName, onGameUpdate, onError]); // <- dependency array
 
   const sendStartGame = useCallback(() => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      console.log("🎮 Sending start game request...");
+      console.log('🎮 Sending start game request...');
       const message = {
-        type: "startGame",
+        type: 'startGame',
         payload: {
           roomId,
           playerId,
@@ -310,16 +311,16 @@ export const WebSocketClient = ({
       };
       wsRef.current.send(JSON.stringify(message));
     } else {
-      console.error("❌ WebSocket not connected for start game");
+      console.error('❌ WebSocket not connected for start game');
     }
   }, [roomId, playerId]);
 
   const sendSelectTeammate = useCallback(
     (teammateId) => {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-        console.log("👥 Sending teammate selection...");
+        console.log('👥 Sending teammate selection...');
         const message = {
-          type: "selectTeammate",
+          type: 'selectTeammate',
           payload: {
             roomId,
             playerId,
@@ -328,7 +329,7 @@ export const WebSocketClient = ({
         };
         wsRef.current.send(JSON.stringify(message));
       } else {
-        console.error("❌ WebSocket not connected for teammate selection");
+        console.error('❌ WebSocket not connected for teammate selection');
       }
     },
     [roomId, playerId]
@@ -336,9 +337,9 @@ export const WebSocketClient = ({
 
   const sendResetTeams = useCallback(() => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      console.log("🔄 Sending reset teams request...");
+      console.log('🔄 Sending reset teams request...');
       const message = {
-        type: "resetTeams",
+        type: 'resetTeams',
         payload: {
           roomId,
           playerId,
@@ -346,15 +347,15 @@ export const WebSocketClient = ({
       };
       wsRef.current.send(JSON.stringify(message));
     } else {
-      console.error("❌ WebSocket not connected for reset teams");
+      console.error('❌ WebSocket not connected for reset teams');
     }
   }, [roomId, playerId]);
 
   const sendLeaveRoom = useCallback(() => {
     if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
-      console.log("🚪 Sending leave room request...");
+      console.log('🚪 Sending leave room request...');
       const message = {
-        type: "leaveRoom",
+        type: 'leaveRoom',
         payload: {
           roomId,
           playerId,
@@ -362,7 +363,7 @@ export const WebSocketClient = ({
       };
       wsRef.current.send(JSON.stringify(message));
     } else {
-      console.error("❌ WebSocket not connected for leave room");
+      console.error('❌ WebSocket not connected for leave room');
     }
   }, [roomId, playerId]);
 
@@ -370,7 +371,7 @@ export const WebSocketClient = ({
     (response) => {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         const message = {
-          type: "playerResponse",
+          type: 'playerResponse',
           payload: {
             roomId,
             playerId,
@@ -378,7 +379,7 @@ export const WebSocketClient = ({
           },
         };
 
-        console.log("🗣️ Sending player response:", message);
+        console.log('🗣️ Sending player response:', message);
         wsRef.current.send(JSON.stringify(message));
       }
     },
@@ -389,7 +390,7 @@ export const WebSocketClient = ({
     (cardIndex) => {
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         const message = {
-          type: "cardPlayed",
+          type: 'cardPlayed',
           payload: {
             roomId,
             playerId,
@@ -397,7 +398,7 @@ export const WebSocketClient = ({
           },
         };
 
-        console.log("🃏 Playing card:", message);
+        console.log('🃏 Playing card:', message);
         wsRef.current.send(JSON.stringify(message));
       }
     },
@@ -426,49 +427,5 @@ export const WebSocketClient = ({
     sendLeaveRoom,
   ]);
 
-  return (
-    <div className="websocket-client">
-      {/* s */}
-
-      {/* Expose functions for parent components to use */}
-      <div style={{ display: "none" }}>
-        {/* These refs will be used by parent components */}
-        <button
-          ref={(ref) => {
-            if (ref) ref.sendPlayerResponse = sendPlayerResponse;
-          }}
-        >
-          Hidden - for parent component access
-        </button>
-        <button
-          ref={(ref) => {
-            if (ref) ref.sendCardPlayed = sendCardPlayed;
-          }}
-        >
-          Hidden - for parent component access
-        </button>
-        <button
-          ref={(ref) => {
-            if (ref) ref.sendStartGame = sendStartGame;
-          }}
-        >
-          Hidden - for parent component access
-        </button>
-        <button
-          ref={(ref) => {
-            if (ref) ref.sendSelectTeammate = sendSelectTeammate;
-          }}
-        >
-          Hidden - for parent component access
-        </button>
-        <button
-          ref={(ref) => {
-            if (ref) ref.sendLeaveRoom = sendLeaveRoom;
-          }}
-        >
-          Hidden - for parent component access
-        </button>
-      </div>
-    </div>
-  );
+  return null;
 };

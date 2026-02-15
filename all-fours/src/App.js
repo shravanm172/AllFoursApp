@@ -4,8 +4,6 @@ import './App.css';
 import { MultiplayerGameBoard } from './components/MultiplayerGameBoard.jsx';
 import { WebSocketClient } from './components/WebSocketClient.jsx';
 
-// Import LocalTestApp for local testing
-// import LocalTestApp from "./LocalTestApp.jsx";
 
 // Function to generate a unique player ID for each tab/session
 const generateUniquePlayerId = () => {
@@ -21,7 +19,6 @@ const generateUniquePlayerId = () => {
   return `player-${timestamp}-${random}-${performance}`;
 };
 
-
 function App() {
   const [gameMode, setGameMode] = useState(null); // null, 'local', 'multiplayer', 'connecting'
   const [errorMessage, setErrorMessage] = useState(''); // For displaying errors
@@ -30,10 +27,6 @@ function App() {
     playerId: generateUniquePlayerId(),
     playerName: '',
   });
-
-
-
-
 
   const handleReturnToMenu = useCallback(() => {
     // Reset to main menu when player leaves room
@@ -53,31 +46,17 @@ function App() {
       <div className="App">
         <div className="home-page">
           <h1 className="title">Fours Owa</h1>
-          {/* <p>Choose your game mode</p> */}
 
           {/* Error Message Display */}
           {errorMessage && <div className="error-message">{errorMessage}</div>}
 
           {gameMode === 'connecting' && (
             <div className="connecting-status">
-              🔄 Connecting to room {multiplayerConfig.roomId}...
+              Connecting to room {multiplayerConfig.roomId}...
             </div>
           )}
 
-          
-          {/* <div className="mode-card">
-            <h3>🏠 Local Game</h3>
-            <p>Play against AI on this device</p>
-            <button
-              className="mode-button local-button"
-              onClick={() => setGameMode("local")}
-            >
-              Start Local Game
-            </button>
-          </div> */}
-
-
-          <div className="nickname-container">
+          <div className="join-form">
             <input
               type="text"
               placeholder="Your Nickname"
@@ -90,42 +69,32 @@ function App() {
                 })
               }
             />
-          </div>
-
-
-
-          <div className="join-room-container">
-              <input
-                type="text"
-                placeholder="Room ID (e.g., room123)"
-                value={multiplayerConfig.roomId}
-                className="room-id-input"
-                onChange={(e) =>
-                  setMultiplayerConfig({
-                    ...multiplayerConfig,
-                    roomId: e.target.value,
-                  })
+            <input
+              type="text"
+              placeholder="Room ID (e.g., room123)"
+              value={multiplayerConfig.roomId}
+              className="room-id-input"
+              onChange={(e) =>
+                setMultiplayerConfig({
+                  ...multiplayerConfig,
+                  roomId: e.target.value,
+                })
+              }
+            />
+            <button
+              className="mode-button multiplayer-button"
+              onClick={() => {
+                if (multiplayerConfig.playerName && multiplayerConfig.roomId) {
+                  setErrorMessage(''); // Clear any previous errors
+                  setGameMode('connecting'); // Set connecting state first
+                } else {
+                  alert('Please enter your name and room ID.');
                 }
-              />
-              <button
-                className="mode-button multiplayer-button"
-                onClick={() => {
-                  if (multiplayerConfig.playerName && multiplayerConfig.roomId) {
-                    setErrorMessage(''); // Clear any previous errors
-                    setGameMode('connecting'); // Set connecting state first
-                  } else {
-                    alert('Please enter your name and room ID');
-                  }
-                }}
-              >
-                Join Room
-              </button>
+              }}
+            >
+              Join Room
+            </button>
           </div>
-
-          <div className="create-room-container">
-                
-          </div>
-          
 
           {/* Hidden WebSocketClient for connection testing when in connecting state */}
           {gameMode === 'connecting' && (
@@ -153,19 +122,7 @@ function App() {
     );
   }
 
-  // Local Game Mode
-  // if (gameMode === "local") {
-  //   return (
-  //     <div>
-  //       <button className="back-button" onClick={() => setGameMode(null)}>
-  //         ← Back to Menu
-  //       </button>
-  //       <LocalTestApp />
-  //     </div>
-  //   );
-  // }
-
-  // Multiplayer Game Mode
+  // Legacy: gameMode
   if (gameMode === 'multiplayer') {
     return (
       <div>
@@ -178,47 +135,6 @@ function App() {
       </div>
     );
   }
-
-  // 🧪 COMMENTED OUT: Original app code - uncomment to restore
-  /*
-  const [gameStarted, setGameStarted] = useState(false);
-  const [gameController, setGameController] = useState(null);
-  const [players, setPlayers] = useState([]);
-
-  // This will be passed to GameBoard to hook into GUIIO
-  const [guiIO, setGuiIO] = useState(null);
-
-  const handleStartGame = () => {
-    const gui = new GUIIO({
-      onLogMessage: () => {},
-      onOverlayMessage: () => {},
-      onPrivateOverlayMessage: () => {},
-      onKickedCard: () => {},
-      onPromptPlayer: () => {},
-      onPromptCard: () => {},
-    });
-
-    const controller = new GameController(gui);
-    controller.setupGame();
-    setPlayers(controller.getPlayersArray());
-    setGuiIO(gui);
-    setGameController(controller);
-    setGameStarted(true);
-  };
-
-  return (
-    <div className="App">
-      {!gameStarted ? (
-        <div className="lobby-screen">
-          <h1>🎮 Welcome to All Fours</h1>
-          <button onClick={handleStartGame}>Start Game</button>
-        </div>
-      ) : (
-        <GameBoard game={gameController} guiIO={guiIO} players={players} />
-      )}
-    </div>
-  );
-  */
 }
 
 export default App;

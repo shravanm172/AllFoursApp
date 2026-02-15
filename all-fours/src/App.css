@@ -52,68 +52,59 @@ h1.title { /* Fours owa */
   margin-bottom: 5rem;
 }
 
-.mode-selector h1 {
-  font-size: 4rem;
-  margin-bottom: 3rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.mode-buttons {
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
 
 /* Join Room button */
-.mode-button {
-  width: 10rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 1rem;
-  padding: 2rem;
-  color: white;
+
+.join-form {
+  display: grid;
+  grid-template-columns: var(--field-w) var(--btn-w);
+  grid-template-rows: var(--row-h) var(--row-h);
+  grid-template-areas:
+    "nick nick"
+    "room btn";
+  row-gap: 2rem;
+  width: calc(var(--field-w) + var(--btn-w) + var(--gap));
+  margin-bottom: 2rem; /* optional spacing below form */
+}
+
+.join-form .nickname-input { grid-area: nick; }
+.join-form .room-id-input   { grid-area: room; }
+.join-form .join-button     { grid-area: btn; }
+
+/* Uniform control sizing */
+.join-form input,
+.join-form .join-button {
+  height: var(--row-h);
+  border-radius: 0.4rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Join button styles */
+.join-form .join-button {
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0c2758;
+}
+
+.nickname-input, .room-id-input, .join-button {
   font-size: 1.8rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
+  font-family: inherit;
 }
 
-.mode-button:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-.mode-button p {
-  font-size: 1.2rem;
-  margin-top: 1rem;
-  opacity: 0.8;
-  font-weight: normal;
-}
-
-.nickname-container {
-  margin-bottom: 3rem;
-}
-
-.nickname-input {
-  width: 30rem;
-  font-size: 1.6rem;
-  height: 4rem;
-  border-radius: 0.4rem;
-}
-
-.room-id-input {
-  width: 20rem;
-  font-size: 1.6rem;
-  height: 4rem;
-  border-radius: 0.4rem;
-}
-
-.join-room {
-  display: flex;
-  flex-direction: row;
+/* Responsive: stack on narrow screens */
+@media (max-width: 480px) {
+  .join-form {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, var(--row-h));
+    grid-template-areas:
+      "nick"
+      "room"
+      "btn";
+    width: min(90vw, 34rem);
+  }
 }
 
 /* Lobby Styles 
