@@ -10,6 +10,7 @@ import { WebSocketClient } from './WebSocketClient.jsx';
 import { applyServerMessages } from '../net/applyServerMessages.js';
 import { Lobby } from './Lobby.jsx';
 import { toCard } from '../utils/normalizeCard.js';
+import { log } from '../utils/logger.js';
 
 const initialMatchState = {
   teamA: { name: 'Team A', matchScore: 0, gameScore: 0 },
@@ -133,22 +134,12 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
     return teammateIndex != null ? (players[teammateIndex]?.id ?? null) : null;
   }, [players, viewerIndex]);
 
-  // Dispatch server messages using applyServerMessages()
-
-  const handleLogMessage = (msg) => {
+  const handleLogMessage = useCallback((msg) => {
     uiDispatch({ type: 'ADD_LOG', payload: msg });
-  };
-
-  const overlayTimerRef = useRef(null);
-
-  useEffect(() => {
-    return () => {
-      if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
-    };
   }, []);
 
-  const handleOverlayMessage = (msg) => {
-    // doesn't leak
+  const overlayTimerRef = useRef(null);
+  const handleOverlayMessage = useCallback((msg) => {
     uiDispatch({ type: 'SET_OVERLAY', payload: msg });
 
     if (overlayTimerRef.current) clearTimeout(overlayTimerRef.current);
@@ -157,8 +148,9 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
       uiDispatch({ type: 'SET_OVERLAY', payload: '' });
       overlayTimerRef.current = null;
     }, 3000);
-  };
+  }, []);
 
+  // Dispatch server messages using applyServerMessages()
   const handleGameUpdate = useCallback(
     (msg) => {
       applyServerMessages(msg, {
@@ -170,7 +162,7 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
         log: handleLogMessage,
       });
     },
-    [uiDispatch, onReturnToMenu, handleOverlayMessage, handleLogMessage]
+    [onReturnToMenu, handleOverlayMessage, handleLogMessage]
   );
 
   const [wsClient, setWsClient] = useState(null);
@@ -181,7 +173,7 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
 
   const handlePlayerResponse = useCallback(
     (choice) => {
-      console.log('🔘 Multiplayer player response:', choice);
+      log('🔘 Multiplayer player response:', choice);
       if (wsClient && wsClient.sendPlayerResponse) {
         wsClient.sendPlayerResponse(choice);
         uiDispatch({ type: 'SET_PROMPT', payload: null }); // Clear the prompt
@@ -191,7 +183,7 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
   );
 
   const handleCardClick = (cardIndex) => {
-    console.log('🃏 Multiplayer card clicked:', cardIndex);
+    log('🃏 Multiplayer card clicked:', cardIndex);
     if (wsClient && wsClient.sendCardPlayed) {
       wsClient.sendCardPlayed(cardIndex);
       uiDispatch({ type: 'SET_CARD_PROMPT', payload: null }); // Clear the card prompt
@@ -199,14 +191,14 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
   };
 
   const handleStartGame = () => {
-    console.log('🎮 Start game button clicked');
+    log('🎮 Start game button clicked');
     if (wsClient && wsClient.sendStartGame) {
       wsClient.sendStartGame();
     }
   };
 
   const handleLeaveRoom = () => {
-    console.log('🚪 Leave room button clicked');
+    log('🚪 Leave room button clicked');
     if (wsClient && wsClient.sendLeaveRoom) {
       if (
         window.confirm(
@@ -219,14 +211,14 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
   };
 
   const handleSelectTeammate = (teammateId) => {
-    console.log('👥 Teammate selected:', teammateId);
+    log('👥 Teammate selected:', teammateId);
     if (wsClient && wsClient.sendSelectTeammate) {
       wsClient.sendSelectTeammate(teammateId);
     }
   };
 
   const handleResetTeams = () => {
-    console.log('🔄 Reset teams button clicked');
+    log('🔄 Reset teams button clicked');
     if (wsClient && wsClient.sendResetTeams) {
       wsClient.sendResetTeams();
     }
@@ -288,18 +280,14 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
         <>
           <div className="kicked-deck">
             <div className="kicked-cards-row">
-              {kickedCards.map((card, index) => (
-                <div key={`kicked-${card.toString()}-${index}`} className="card">
-                  {getCardComponent(card.getSuit(), card.getRank())
-                    ? getCardComponent(
-                        card.getSuit(),
-                        card.getRank()
-                      )({
-                        style: { width: '100%', height: '100%' },
-                      })
-                    : card.toString()}
-                </div>
-              ))}
+              {kickedCards.map((card, index) => {
+                const Comp = getCardComponent(card.getSuit(), card.getRank());
+                return (
+                  <div key={`kicked-${card.toString()}-${index}`} className="card">
+                    {Comp ? <Comp style={{ width: '100%', height: '100%' }} /> : card.toString()}
+                  </div>
+                );
+              })}
             </div>
           </div>
 

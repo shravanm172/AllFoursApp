@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { getCardComponent } from "../utils/getCardComponent";
-import { B1 } from "@letele/playing-cards"; // Add at top
-import { Card } from "../logic/Card.js"; // Import Card class
-import "../styles/player_hand.css"; // create if needed
+import React, { useState, useEffect } from 'react';
+import { getCardComponent } from '../utils/getCardComponent';
+import { B1 } from '@letele/playing-cards'; // Add at top
+import { Card } from '../logic/Card.js'; // Import Card class
+import { log } from '../utils/logger.js';
+import '../styles/player_hand.css'; // create if needed
 
 export const PlayerHand = ({
   player,
@@ -10,7 +11,7 @@ export const PlayerHand = ({
   onCardClick,
   selfId,
   teammateId,
-  layout = "column",
+  layout = 'column',
   playerIndex, // Add playerIndex prop to identify top player
   isBeggingPhase, // Use boolean instead of gamePhase
   beggarId, // Add beggar ID prop
@@ -26,7 +27,7 @@ export const PlayerHand = ({
   let isVisible = false; // Default visibility to false
 
   // Debug logging
-  console.log(`🔍 PlayerHand visibility check for ${player.getName()}:`, {
+  log(`🔍 PlayerHand visibility check for ${player.getName()}:`, {
     playerId,
     selfId,
     teammateId,
@@ -37,12 +38,12 @@ export const PlayerHand = ({
     isDealer,
     handLength: cards.length,
     actualCards: cards.map((c) => {
-      if (!c) return "null";
-      if (typeof c.toString === "function") {
+      if (!c) return 'null';
+      if (typeof c.toString === 'function') {
         try {
           return c.toString();
         } catch (e) {
-          return "toString error";
+          return 'toString error';
         }
       }
       return typeof c;
@@ -51,19 +52,14 @@ export const PlayerHand = ({
 
   if (isBeggingPhase) {
     // During begging phase: only show cards if this player is the beggar or dealer
-    if (
-      (isBeggar && (isSelf || isTeammate)) ||
-      (isDealer && (isSelf || isTeammate))
-    ) {
+    if ((isBeggar && (isSelf || isTeammate)) || (isDealer && (isSelf || isTeammate))) {
       isVisible = true;
-      console.log(
-        `👁️ Visible during begging: ${player.getName()} is ${isBeggar ? "beggar" : "dealer"}`
-      );
+      log(`👁️ Visible during begging: ${player.getName()} is ${isBeggar ? 'beggar' : 'dealer'}`);
     }
   } else {
     // During trick play: show own cards and teammate's cards
     isVisible = isSelf || isTeammate;
-    console.log(
+    log(
       `👁️ Visible during trick play: ${player.getName()}, isSelf=${isSelf}, isTeammate=${isTeammate}, isVisible=${isVisible}`
     );
   }
@@ -82,14 +78,12 @@ export const PlayerHand = ({
       return new Card(card.suit, card.rank);
     }
 
-    console.warn("Invalid card object in PlayerHand:", card);
+    console.warn('Invalid card object in PlayerHand:', card);
     return null;
   };
 
   // Convert all cards to ensure they're Card instances
-  const ensuredCards = cards
-    .map(ensureCardInstance)
-    .filter((card) => card !== null);
+  const ensuredCards = cards.map(ensureCardInstance).filter((card) => card !== null);
 
   // State for tracking selected card (for double-click confirmation)
   const [selectedCardIndex, setSelectedCardIndex] = useState(null);
@@ -113,11 +107,11 @@ export const PlayerHand = ({
   }, [isPromptingCard]);
 
   // Determine fan effect class based on card count
-  let fanEffectClass = "";
+  let fanEffectClass = '';
   if (ensuredCards.length > 6 && ensuredCards.length <= 9) {
-    fanEffectClass = "fan-effect-nine";
+    fanEffectClass = 'fan-effect-nine';
   } else if (ensuredCards.length > 9 && ensuredCards.length <= 12) {
-    fanEffectClass = "fan-effect-twelve";
+    fanEffectClass = 'fan-effect-twelve';
   }
 
   // Helper function to safely get card properties (now guaranteed to be Card instances)
@@ -141,16 +135,16 @@ export const PlayerHand = ({
   return (
     <div className="player-hand-container">
       <div
-        className={`player-hand ${layout === "row" ? "horizontal" : ""} ${
-          isSelf ? "self" : isTeammate ? "teammate" : "opponent"
+        className={`player-hand ${layout === 'row' ? 'horizontal' : ''} ${
+          isSelf ? 'self' : isTeammate ? 'teammate' : 'opponent'
         } ${fanEffectClass}`}
       >
         {isVisible
           ? ensuredCards.map((card, index) => (
               <div
                 key={`${player.getId()}-${getCardString(card)}-${index}`}
-                className={`card ${isSelf && isPromptingCard ? "clickable" : ""} ${fanEffectClass} ${
-                  isSelf && selectedCardIndex === index ? "selected" : ""
+                className={`card ${isSelf && isPromptingCard ? 'clickable' : ''} ${fanEffectClass} ${
+                  isSelf && selectedCardIndex === index ? 'selected' : ''
                 }`}
                 onClick={() => handleCardClick(index)}
               >
@@ -159,7 +153,7 @@ export const PlayerHand = ({
                       getCardSuit(card),
                       getCardRank(card)
                     )({
-                      style: { width: "100%", height: "100%" },
+                      style: { width: '100%', height: '100%' },
                     })
                   : getCardString(card)}
               </div>
@@ -170,7 +164,7 @@ export const PlayerHand = ({
                 className={`card ${fanEffectClass}`}
                 style={{ zIndex: index }}
               >
-                <B1 style={{ width: "100%", height: "100%" }} />
+                <B1 style={{ width: '100%', height: '100%' }} />
               </div>
             ))}
       </div>
