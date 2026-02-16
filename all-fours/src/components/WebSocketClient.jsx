@@ -3,7 +3,7 @@
 // Protocol adapter
 // returns null
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { WS_URL } from '../config'; // adjust path if needed
 
 export const WebSocketClient = ({
@@ -14,8 +14,8 @@ export const WebSocketClient = ({
   onClientReady,
   onError,
 }) => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState('Disconnected');
+  const [, setIsConnected] = useState(false);
+  const [, setConnectionStatus] = useState('Disconnected');
 
   const wsRef = useRef(null);
 

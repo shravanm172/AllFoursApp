@@ -1,5 +1,5 @@
 // MultiplayerGameBoard.jsx
-import React, { useState, useCallback, useReducer, useMemo, useRef, useEffect } from 'react';
+import React, { useState, useCallback, useReducer, useMemo, useRef } from 'react';
 import '../styles/game_board.css';
 import { getCardComponent } from '../utils/getCardComponent.js';
 import { ScoreBoard } from './Scoreboard.jsx';
@@ -10,7 +10,6 @@ import { WebSocketClient } from './WebSocketClient.jsx';
 import { applyServerMessages } from '../net/applyServerMessages.js';
 import { Lobby } from './Lobby.jsx';
 import { toCard } from '../utils/normalizeCard.js';
-import { log } from '../utils/logger.js';
 
 const initialMatchState = {
   teamA: { name: 'Team A', matchScore: 0, gameScore: 0 },
@@ -111,7 +110,7 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
     log,
   } = ui;
 
-  const players = gameState?.players || [];
+  const players = useMemo(() => gameState?.players ?? [], [gameState?.players]);
 
   // Memoizing viewerIndex adn viewerTeammateId
   const viewerIndex = useMemo(() => {
@@ -173,7 +172,6 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
 
   const handlePlayerResponse = useCallback(
     (choice) => {
-      log('🔘 Multiplayer player response:', choice);
       if (wsClient && wsClient.sendPlayerResponse) {
         wsClient.sendPlayerResponse(choice);
         uiDispatch({ type: 'SET_PROMPT', payload: null }); // Clear the prompt
@@ -183,7 +181,6 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
   );
 
   const handleCardClick = (cardIndex) => {
-    log('🃏 Multiplayer card clicked:', cardIndex);
     if (wsClient && wsClient.sendCardPlayed) {
       wsClient.sendCardPlayed(cardIndex);
       uiDispatch({ type: 'SET_CARD_PROMPT', payload: null }); // Clear the card prompt
@@ -191,14 +188,12 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
   };
 
   const handleStartGame = () => {
-    log('🎮 Start game button clicked');
     if (wsClient && wsClient.sendStartGame) {
       wsClient.sendStartGame();
     }
   };
 
   const handleLeaveRoom = () => {
-    log('🚪 Leave room button clicked');
     if (wsClient && wsClient.sendLeaveRoom) {
       if (
         window.confirm(
@@ -211,14 +206,12 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
   };
 
   const handleSelectTeammate = (teammateId) => {
-    log('👥 Teammate selected:', teammateId);
     if (wsClient && wsClient.sendSelectTeammate) {
       wsClient.sendSelectTeammate(teammateId);
     }
   };
 
   const handleResetTeams = () => {
-    log('🔄 Reset teams button clicked');
     if (wsClient && wsClient.sendResetTeams) {
       wsClient.sendResetTeams();
     }

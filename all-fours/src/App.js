@@ -1,5 +1,5 @@
 // src/App.js
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import './App.css';
 import { MultiplayerGameBoard } from './components/MultiplayerGameBoard.jsx';
 import { WebSocketClient } from './components/WebSocketClient.jsx';

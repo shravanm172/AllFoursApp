@@ -64,7 +64,7 @@ export class Team {
   }
 
   getName() {
-    return this.name;
+    return this.name || "Team";
   }
 
   // Additional helper method - check if team contains a specific player
