@@ -1,4 +1,5 @@
 // src/utils/getCardComponent.js
+// Just a UI rendering utility
 import * as Cards from "@letele/playing-cards";
 
 export function getCardComponent(suit, rank) {

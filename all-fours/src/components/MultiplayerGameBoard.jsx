@@ -7,8 +7,9 @@ import { TrickArea } from './TrickArea.jsx';
 import { PlayerHand } from './PlayerHand.jsx';
 import { LogPanel } from './LogPanel.jsx';
 import { WebSocketClient } from './WebSocketClient.jsx';
+import { applyServerMessages } from '../net/applyServerMessages.js';
 import { Lobby } from './Lobby.jsx';
-import { Card } from '../logic/Card.js';
+import { toCard } from '../utils/normalizeCard.js';
 
 const initialMatchState = {
   teamA: { name: 'Team A', matchScore: 0, gameScore: 0 },
@@ -111,6 +112,7 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
 
   const players = gameState?.players || [];
 
+  // Memoizing viewerIndex adn viewerTeammateId
   const viewerIndex = useMemo(() => {
     return players.findIndex((p) => p.id === playerId);
   }, [players, playerId]);
@@ -131,193 +133,7 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
     return teammateIndex != null ? (players[teammateIndex]?.id ?? null) : null;
   }, [players, viewerIndex]);
 
-  // Helper function to convert plain card object to Card instance
-  const createCardInstance = (cardData) => {
-    if (!cardData) return null;
-
-    // If it's already a Card instance with methods, return as-is
-    if (cardData.getSuit && cardData.getRank && cardData.toString) {
-      return cardData;
-    }
-
-    // If it's a plain object with suit and rank properties, convert to Card instance
-    if (cardData.suit && cardData.rank) {
-      return new Card(cardData.suit, cardData.rank);
-    }
-
-    // If it has a toString property but no methods, try to extract suit and rank
-    if (cardData.toString && typeof cardData.toString === 'string') {
-      // Handle cases where toString is a string property, not a method
-      const parts = cardData.toString.split(' of ');
-      if (parts.length === 2) {
-        return new Card(parts[1], parts[0]);
-      }
-    }
-
-    console.warn('Unable to convert card data to Card instance:', cardData);
-    return cardData; // Return as-is as fallback
-  };
-
-  const handleGameUpdate = useCallback(
-    (newGameState) => {
-      console.log('🎲 Game state updated:', newGameState);
-      console.log('🔍 Message type:', newGameState.type);
-
-      // Handle different types of updates
-      if (newGameState.type) {
-        switch (newGameState.type) {
-          case 'lobby': {
-            const lobby = {
-              roomId: newGameState.roomId,
-              playersInRoom: newGameState.playersInRoom,
-              totalPlayersInRoom: newGameState.totalPlayersInRoom,
-              maxPlayers: newGameState.maxPlayers,
-              isRoomFull: newGameState.isRoomFull,
-              disconnectedCount: newGameState.disconnectedCount,
-              allPlayers: newGameState.allPlayers || [],
-              gameStarted: newGameState.gameStarted,
-              roomMaster: newGameState.roomMaster,
-              canStartGame: newGameState.canStartGame,
-            };
-
-            // Reset everything back to lobby defaults
-            uiDispatch({ type: 'RESET_TO_LOBBY' });
-            uiDispatch({ type: 'SET_LOBBY_STATE', payload: lobby });
-
-            // UI-only toggle stays outside reducer
-            setShowLog(false);
-            break;
-          }
-
-          case 'teamAssignments':
-            uiDispatch({ type: 'SET_TEAM_ASSIGNMENTS', payload: newGameState.teamAssignments });
-            uiDispatch({
-              type: 'PATCH_LOBBY_STATE',
-              payload: { canStartGame: newGameState.canStartGame },
-            });
-            break;
-
-          case 'activePlayerChange':
-            uiDispatch({
-              type: 'SET_ACTIVE_PLAYER',
-              payload: newGameState.playerId || newGameState.activePlayerId,
-            });
-            break;
-
-          case 'trickState': {
-            const trickCards = (newGameState.playedCards || []).map((cardData) => {
-              if (!cardData) return null;
-              return {
-                player: cardData.player,
-                card: createCardInstance(cardData.card),
-              };
-            });
-
-            uiDispatch({ type: 'SET_TRICK_STATE', payload: trickCards });
-            break;
-          }
-
-          case 'kickedCard': {
-            const cardInstance = createCardInstance(newGameState.card);
-            uiDispatch({ type: 'ADD_KICKED_CARD', payload: cardInstance });
-            break;
-          }
-
-          case 'clearKickedCards':
-            uiDispatch({ type: 'SET_KICKED_CARDS', payload: [] });
-            break;
-
-          case 'scores':
-            if (newGameState.teamA && newGameState.teamB) {
-              uiDispatch({
-                type: 'PATCH_MATCH_STATE',
-                payload: { teamA: newGameState.teamA, teamB: newGameState.teamB },
-              });
-            }
-            break;
-
-          case 'logMessage':
-            handleLogMessage(newGameState.message);
-            break;
-
-          case 'overlayMessage':
-            handleOverlayMessage(newGameState.message);
-            break;
-
-          case 'leftRoom':
-            handleOverlayMessage('Left room successfully');
-            uiDispatch({ type: 'RESET_TO_LOBBY' });
-            uiDispatch({ type: 'SET_LOBBY_STATE', payload: null });
-            uiDispatch({ type: 'SET_GAME_STATE', payload: null });
-            uiDispatch({ type: 'SET_TEAM_ASSIGNMENTS', payload: null });
-
-            setTimeout(() => onReturnToMenu?.(), 1500);
-            break;
-
-          case 'gameEnded':
-            handleOverlayMessage(`Game ended: ${newGameState.message}`);
-            uiDispatch({ type: 'SET_GAME_STATE', payload: null });
-            uiDispatch({ type: 'SET_PROMPT', payload: null });
-            uiDispatch({ type: 'SET_CARD_PROMPT', payload: null });
-            uiDispatch({ type: 'SET_TRICK_STATE', payload: [] });
-            break;
-
-          case 'privateMessage':
-            // Private overlay message for specific player
-            handleOverlayMessage(newGameState.message);
-            break;
-
-          case 'playerPrompt':
-            uiDispatch({
-              type: 'SET_PROMPT',
-              payload: {
-                playerId: newGameState.playerId,
-                promptText: newGameState.promptText,
-                buttonOptions: newGameState.buttonOptions,
-              },
-            });
-            break;
-
-          case 'cardPrompt':
-            uiDispatch({
-              type: 'SET_CARD_PROMPT',
-              payload: {
-                playerId: newGameState.playerId,
-                hand: (newGameState.hand || []).map(createCardInstance),
-              },
-            });
-            break;
-
-          case 'gameState': {
-            const updatedPlayers = (newGameState.players || []).map((player) => ({
-              ...player,
-              hand: (player.hand || []).map(createCardInstance),
-            }));
-
-            const nextGameState = { ...newGameState, players: updatedPlayers };
-
-            uiDispatch({ type: 'SET_GAME_STATE', payload: nextGameState });
-
-            if (newGameState.currentDealer) {
-              uiDispatch({
-                type: 'PATCH_MATCH_STATE',
-                payload: { currentDealer: newGameState.currentDealer },
-              });
-            }
-            break;
-          }
-
-          default:
-            uiDispatch({ type: 'SET_GAME_STATE', payload: newGameState });
-        }
-      } else {
-        // Full game state update (fallback)
-        console.log('FALLBACK: Full game state update');
-        uiDispatch({ type: 'SET_GAME_STATE', payload: newGameState });
-      }
-    },
-    [playerId, onReturnToMenu]
-  );
+  // Dispatch server messages using applyServerMessages()
 
   const handleLogMessage = (msg) => {
     uiDispatch({ type: 'ADD_LOG', payload: msg });
@@ -342,6 +158,20 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
       overlayTimerRef.current = null;
     }, 3000);
   };
+
+  const handleGameUpdate = useCallback(
+    (msg) => {
+      applyServerMessages(msg, {
+        dispatch: uiDispatch,
+        toCard,
+        onReturnToMenu,
+        setShowLog,
+        overlay: handleOverlayMessage,
+        log: handleLogMessage,
+      });
+    },
+    [uiDispatch, onReturnToMenu, handleOverlayMessage, handleLogMessage]
+  );
 
   const [wsClient, setWsClient] = useState(null);
 
