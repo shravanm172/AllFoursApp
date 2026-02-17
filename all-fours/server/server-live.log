@@ -6836,3 +6836,34 @@
 [2026-02-17T00:42:24.814Z] [LOG] 📝 Game message (log): Current trump: Spades
 [2026-02-17T00:42:24.815Z] [LOG] 🤔 Prompting player 3: do you want to beg?
 [2026-02-17T00:42:24.815Z] [LOG] 📤 sendToPlayer: {"to":"player-1771288850447-r26q74agb-58","type":"playerPrompt","payload":{"promptText":"do you want to beg?","buttonOptions":{"yesText":"Beg","noText":"Stand"},"playerId":"player-1771288850447-r26q74agb-58","matchId":null}}
+[2026-02-17T00:59:26.290Z] [LOG] ❌ WebSocket connection closed with code 1006: 
+[2026-02-17T00:59:26.291Z] [LOG] 🧹 Player 2 disconnected from room 1 - removing immediately
+[2026-02-17T00:59:26.292Z] [LOG] 🔄 Transitioning room 1 back to lobby-ready state
+[2026-02-17T00:59:26.292Z] [LOG] 🚫 Removed player player-1771288849603-pqbvzifof-47 from room 1
+[2026-02-17T00:59:26.293Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T00:59:26.311Z] [LOG] ❌ WebSocket connection closed with code 1006: 
+[2026-02-17T00:59:26.314Z] [LOG] 🧹 Player 3 disconnected from room 1 - removing immediately
+[2026-02-17T00:59:26.329Z] [LOG] 🚫 Removed player player-1771288850447-r26q74agb-58 from room 1
+[2026-02-17T00:59:26.331Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T00:59:26.332Z] [LOG] ❌ WebSocket connection closed with code 1006: 
+[2026-02-17T00:59:26.333Z] [LOG] 🧹 Player 4 disconnected from room 1 - removing immediately
+[2026-02-17T00:59:26.333Z] [LOG] 🚫 Removed player player-1771288851211-ixjny2o7k-51 from room 1
+[2026-02-17T00:59:26.333Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T00:59:26.334Z] [LOG] ❌ WebSocket connection closed with code 1006: 
+[2026-02-17T00:59:26.334Z] [LOG] 🧹 Player 1 disconnected from room 1 - removing immediately
+[2026-02-17T00:59:26.334Z] [LOG] 🚫 Removed player player-1771288843282-g61il8xms-426 from room 1
+[2026-02-17T00:59:26.335Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T00:59:26.335Z] [LOG] 🗑️ Removing empty room 1
+[2026-02-17T01:10:24.702Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T01:10:24.761Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T01:10:24.777Z] [LOG] 🚪 Player 2 (player-1771288849603-pqbvzifof-47) joining room 1
+[2026-02-17T01:10:24.778Z] [LOG] 👑 2 is now the room master for room 1
+[2026-02-17T01:10:24.778Z] [LOG] ✅ Player 2 added to room 1. Total players: 1
+[2026-02-17T01:10:24.781Z] [LOG] 🚪 Player 1 (player-1771288843282-g61il8xms-426) joining room 1
+[2026-02-17T01:10:24.781Z] [LOG] ✅ Player 1 added to room 1. Total players: 2
+[2026-02-17T01:10:24.789Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T01:10:24.804Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T01:10:24.805Z] [LOG] 🚪 Player 4 (player-1771288851211-ixjny2o7k-51) joining room 1
+[2026-02-17T01:10:24.806Z] [LOG] ✅ Player 4 added to room 1. Total players: 3
+[2026-02-17T01:10:24.842Z] [LOG] 🚪 Player 3 (player-1771288850447-r26q74agb-58) joining room 1
+[2026-02-17T01:10:24.843Z] [LOG] ✅ Player 3 added to room 1. Total players: 4

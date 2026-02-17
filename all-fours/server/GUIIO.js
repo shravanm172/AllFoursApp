@@ -8,18 +8,10 @@ export class GUIIO {
     this.overlayQueue = [];
     this.isProcessingOverlay = false;
     this.overlayDelay = 2000;
-    this.currentRound = null; // Store reference to current round
     this.matchId = null;
     this.isMatchActive = () => true; // injected from server if you want
   }
 
-  setMatchId(matchId) {
-    this.matchId = matchId;
-  }
-
-  setMatchActiveChecker(fn) {
-    this.isMatchActive = typeof fn === "function" ? fn : () => true;
-  }
 
   withMatch(payload) {
     return { ...(payload || {}), matchId: this.matchId };
@@ -28,7 +20,7 @@ export class GUIIO {
 
   /**
    * Update the player order to match the GameController's arranged order
-   * This ensures trick card positioning works correctly
+   * Ensures trick card positioning works correctly
    */
   updatePlayerOrder(gameControllerPlayers) {
     console.log("🔄 UPDATING GUIIO player order to match GameController");
@@ -60,7 +52,7 @@ export class GUIIO {
   }
 
   /**
-   * Broadcast a message to all players in the room
+   * Broadcast message to all players in the room
    */
   broadcastToAll(type, payload) {
   if (!this.isMatchActive()) return;
@@ -78,22 +70,24 @@ export class GUIIO {
 }
 
   /**
-   * Send a message to a specific player
+   * Send message to a specific player
    */
   sendToPlayer(playerId, type, payload) {
-  if (!this.isMatchActive()) return;
-  const finalPayload = this.withMatch(payload);
+    if (!this.isMatchActive()) return;
+    const finalPayload = this.withMatch(payload);
 
-  const player = this.players.find((p) => p.playerId === playerId);
-  if (player && player.ws.readyState === 1) {
-    try {
-      console.log("📤 sendToPlayer:", { to: playerId, type, payload: finalPayload });
-      player.ws.send(JSON.stringify({ type, payload: finalPayload }));
-    } catch (error) {
-      console.error(`❌ Failed to send to player ${playerId}:`, error);
+    const player = this.players.find((p) => p.playerId === playerId);
+    if (player && player.ws.readyState === 1) {
+      try {
+        console.log("📤 sendToPlayer:", { to: playerId, type, payload: finalPayload });
+        player.ws.send(JSON.stringify({ type, payload: finalPayload }));
+      } catch (error) {
+        console.error(`❌ Failed to send to player ${playerId}:`, error);
+      }
     }
   }
-}
+
+
   /**
    * Show a message in the appropriate context
    */
@@ -250,24 +244,7 @@ export class GUIIO {
    * Show player hands to all players
    */
   showPlayerHands(players, currentRound = null, currentDealer = null) {
-    // console.log("🚨 GAMESTATE SENT AFTER END?");
-    // console.log("🖐️ Updating player hands");
-    // console.log("🔍 DEBUG GUIIO - Received round info:", {
-    //   hasCurrentRound: !!currentRound,
-    //   currentRoundBeggingPhase: currentRound
-    //     ? currentRound.isBeggingPhase
-    //     : "no round",
-    //   currentRoundBeggar:
-    //     currentRound && currentRound.beggar
-    //       ? currentRound.beggar.getName()
-    //       : "no beggar",
-    //   hasCurrentDealer: !!currentDealer,
-    //   currentDealerName: currentDealer ? currentDealer.getName() : "no dealer",
-    // });
-
-    
-
-    // Send each player their own hand and visible info about others
+    // Send each player their own hand and visiblty info about others
     this.players.forEach((clientPlayer) => {
       // Rotate the player array so this client is always at index 0 (bottom)
       const rotatedPlayers = this.rotatePlayersForClient(
@@ -534,6 +511,7 @@ export class GUIIO {
     });
   }
   
+  // Helper to get team display name based on seating order
   getTeamDisplayNames() {
     // players is your WS seating order: [0,1,2,3]
     const p = this.players || [];
@@ -544,7 +522,7 @@ export class GUIIO {
 
     return { teamA, teamB };
   }
-
+  // Helper to format display name of teams
   formatTeamNames(text) {
     if (typeof text !== "string") return text;
     if (!this.players || this.players.length !== 4) return text;

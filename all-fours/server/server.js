@@ -1,62 +1,9 @@
 import WebSocket, { WebSocketServer } from "ws";
-import { GameController } from "./logic/GameController.js"; // game logic
-import { GUIIO } from "./GUIIO.js"; // custom IO handler
+import { GameController } from "./logic/GameController.js";
+import { GUIIO } from "./GUIIO.js";
 import http from "http";
-import fs from "fs";
-import path from "path";
 
-const SERVER_LOG_PATH = path.resolve(process.cwd(), "server-live.log");
-
-function toLogString(value) {
-  if (value instanceof Error) {
-    return value.stack || value.message;
-  }
-
-  if (typeof value === "string") {
-    return value;
-  }
-
-  try {
-    return JSON.stringify(value);
-  } catch {
-    return String(value);
-  }
-}
-
-function appendServerLog(level, args) {
-  const timestamp = new Date().toISOString();
-  const line = `[${timestamp}] [${level}] ${args.map(toLogString).join(" ")}\n`;
-
-  try {
-    fs.appendFileSync(SERVER_LOG_PATH, line, "utf8");
-  } catch {
-    // Avoid crashing if file logging fails
-  }
-}
-
-const originalConsole = {
-  log: console.log.bind(console),
-  warn: console.warn.bind(console),
-  error: console.error.bind(console),
-};
-
-console.log = (...args) => {
-  originalConsole.log(...args);
-  appendServerLog("LOG", args);
-};
-
-console.warn = (...args) => {
-  originalConsole.warn(...args);
-  appendServerLog("WARN", args);
-};
-
-console.error = (...args) => {
-  originalConsole.error(...args);
-  appendServerLog("ERROR", args);
-};
-
-// const wss = new WebSocketServer({ port: 8080 });
-// console.log("🌐 WebSocket server running on ws://localhost:8080");
+// --- Server bootstrap ---
 const PORT = process.env.PORT || 8080;
 const server = http.createServer(); 
 const wss = new WebSocketServer({ server });
@@ -64,7 +11,9 @@ server.listen(PORT, "0.0.0.0", () => {
   console.log(`🌐 WebSocket server listening on ws://0.0.0.0:${PORT}`);
 });
 
-const gameRooms = {}; // Map: roomId => { players: [], game: GameController }
+// In-memory room registry.
+// Shape: roomId -> { players, game, gameStarted, roomMaster, teamAssignments }
+const gameRooms = {};
 
 function heartbeat() { this.isAlive = true; }
 wss.on("connection", (ws) => {
@@ -72,6 +21,7 @@ wss.on("connection", (ws) => {
   ws.on("pong", heartbeat);
   console.log("📡 New WebSocket connection established");
 
+  // Main inbound websocket dispatcher.
   ws.on("message", async (message) => {
     try {
       const data = JSON.parse(message);
@@ -119,15 +69,15 @@ wss.on("connection", (ws) => {
       reason?.toString()
     );
 
-    // Determine if this was a deliberate close (code 1000) or unexpected
+    // Code 1000 indicates a deliberate/normal close.
     const wasDeliberate = code === 1000;
 
-    // Clean up player from any rooms they were in
+    // Remove disconnected socket from whichever room it belonged to.
     cleanupPlayerFromRooms(ws, wasDeliberate);
   });
 });
 
-// Ping every 15s; terminate if no pong -> triggers  cleanup
+// Heartbeat watchdog: terminate dead sockets so close-cleanup can run.
 const interval = setInterval(() => {
   wss.clients.forEach((ws) => {
     if (ws.isAlive === false) return ws.terminate();
@@ -138,31 +88,32 @@ const interval = setInterval(() => {
 
 wss.on("close", () => clearInterval(interval));
 
-// Graceful shutdown on platform signals
+// Graceful process shutdown.
 process.on("SIGTERM", () => { server.close(() => process.exit(0)); });
 process.on("SIGINT", () => { server.close(() => process.exit(0)); });
 
-// Handler Functions
+// =============================================Message handlers ======================================*/
+//======================================================================================================
 async function handleJoinRoom(ws, payload) {
   try {
     const { roomId, playerId, playerName } = payload;
 
     console.log(`🚪 Player ${playerName} (${playerId}) joining room ${roomId}`);
 
-    // Initialize room if it doesn't exist
+    // Lazily create room on first join.
     if (!gameRooms[roomId]) {
       gameRooms[roomId] = {
         players: [],
         game: null,
         gameStarted: false,
         roomMaster: null,
-        teamAssignments: null, // { roomMasterTeammate: playerId, team1: [id1, id2], team2: [id3, id4] }
+        teamAssignments: null, 
       };
     }
 
     const room = gameRooms[roomId];
 
-    // Debug: Check if player already exists in room
+    // Prevent duplicate presence in a room (same id or same name).
     const existingPlayer = room.players.find(
       (p) => p.playerId === playerId || p.playerName === playerName
     );
@@ -184,7 +135,7 @@ async function handleJoinRoom(ws, payload) {
       return;
     }
 
-    // Check room capacity - no reconnection logic, everyone is treated as new
+    // Hard cap at 4 players 
     if (room.players.length >= 4) {
       console.log(
         `❌ Room ${roomId} is full (${room.players.length}/4 players)`
@@ -201,17 +152,17 @@ async function handleJoinRoom(ws, payload) {
       return;
     }
 
-    // Create new player data - everyone is treated as a new player
+    // Persist player socket + identity in room state.
     const playerData = {
       ws,
       playerId,
       playerName,
     };
 
-    // New player joining
+    // Add player to room roster.
     room.players.push(playerData);
 
-    // Set as room master if they're the first player
+    // First player becomes room master.
     if (room.players.length === 1) {
       room.roomMaster = playerId;
       console.log(`👑 ${playerName} is now the room master for room ${roomId}`);
@@ -221,7 +172,7 @@ async function handleJoinRoom(ws, payload) {
       `✅ Player ${playerName} added to room ${roomId}. Total players: ${room.players.length}`
     );
 
-    // Send initial join confirmation
+    // Send full room snapshot to joining player.
     ws.send(
       JSON.stringify({
         type: "joinedRoom",
@@ -245,7 +196,7 @@ async function handleJoinRoom(ws, payload) {
       })
     );
 
-    // Broadcast updated player list to all other players in the room
+    // Broadcast updated lobby state to everyone else.
     const playerListUpdate = {
       type: "playerListUpdate",
       payload: {
@@ -270,8 +221,7 @@ async function handleJoinRoom(ws, payload) {
       }
     });
 
-    // Note: Game will only start when room master manually starts it
-    // No longer auto-starting when 4 players join
+    // Game start is manual; joining does not auto-start the game.
   } catch (error) {
     console.error("❌ Error in handleJoinRoom:", error);
     ws.send(
@@ -296,7 +246,7 @@ function handlePlayerResponse(ws, payload) {
       return;
     }
 
-    // Forward response to WebSocket GUIIO
+    // Forward interactive response to the active game IO adapter.
     if (room.game.io && room.game.io.handlePlayerResponse) {
       room.game.io.handlePlayerResponse(playerId, response);
     }
@@ -308,9 +258,9 @@ function handlePlayerResponse(ws, payload) {
 function handleCardPlayed(ws, payload) {
   try {
     const { roomId, playerId, cardIndex } = payload;
-    console.log(
-      `🃏 Card played: Player ${playerId} played card ${cardIndex} in room ${roomId}`
-    );
+    // console.log(
+    //   `🃏 Card played: Player ${playerId} played card ${cardIndex} in room ${roomId}`
+    // );
 
     const room = gameRooms[roomId];
     if (!room || !room.game) {
@@ -318,7 +268,7 @@ function handleCardPlayed(ws, payload) {
       return;
     }
 
-    // Forward card selection to WebSocket GUIIO
+    // Forward card selection to the active game IO adapter.
     if (room.game.io && room.game.io.handleCardSelection) {
       room.game.io.handleCardSelection(playerId, cardIndex);
     }
@@ -346,7 +296,7 @@ function handleSelectTeammate(ws, payload) {
       return;
     }
 
-    // Check if player is room master
+    // Only room master can choose teammate.
     if (room.roomMaster !== playerId) {
       console.error("❌ Only room master can select teammate");
       ws.send(
@@ -358,7 +308,7 @@ function handleSelectTeammate(ws, payload) {
       return;
     }
 
-    // Check if game already started
+    // Team assignment is lobby-only.
     if (room.gameStarted) {
       console.error("❌ Cannot select teammate after game started");
       ws.send(
@@ -370,7 +320,7 @@ function handleSelectTeammate(ws, payload) {
       return;
     }
 
-    // Check if we have 4 players
+    // Teammates can only be set in a full 4-player room.
     if (room.players.length < 4) {
       console.error("❌ Need 4 players before selecting teammates");
       ws.send(
@@ -382,7 +332,7 @@ function handleSelectTeammate(ws, payload) {
       return;
     }
 
-    // Validate teammate selection
+    // Validate teammate selection target.
     const teammateExists = room.players.some((p) => p.playerId === teammateId);
     if (!teammateExists) {
       console.error("❌ Selected teammate not in room");
@@ -406,7 +356,7 @@ function handleSelectTeammate(ws, payload) {
       return;
     }
 
-    // Create team assignments
+    // Build two teams from room master + selected teammate.
     const allPlayerIds = room.players.map((p) => p.playerId);
     const team1 = [playerId, teammateId]; // Room master's team
     const team2 = allPlayerIds.filter((id) => !team1.includes(id)); // Remaining players
@@ -436,7 +386,7 @@ function handleSelectTeammate(ws, payload) {
       `✅ Teams assigned: Team 1: ${team1.join(", ")}, Team 2: ${team2.join(", ")}`
     );
 
-    // Broadcast team assignments to all players
+    // Broadcast final team assignment and start eligibility.
     const teamUpdate = {
       type: "teamAssignments",
       payload: {
@@ -459,7 +409,7 @@ function handleSelectTeammate(ws, payload) {
 function handleResetTeams(ws, payload) {
   try {
     const { roomId, playerId } = payload;
-    console.log(`🔄 Reset teams requested by ${playerId} in room ${roomId}`);
+    // console.log(`🔄 Reset teams requested by ${playerId} in room ${roomId}`);
 
     const room = gameRooms[roomId];
     if (!room) {
@@ -473,7 +423,7 @@ function handleResetTeams(ws, payload) {
       return;
     }
 
-    // Check if player is room master
+    // Only room master can reset teams.
     if (room.roomMaster !== playerId) {
       console.error("❌ Only room master can reset teams");
       ws.send(
@@ -485,7 +435,7 @@ function handleResetTeams(ws, payload) {
       return;
     }
 
-    // Check if game already started
+    // Team reset is lobby-only.
     if (room.gameStarted) {
       console.error("❌ Cannot reset teams after game started");
       ws.send(
@@ -497,11 +447,11 @@ function handleResetTeams(ws, payload) {
       return;
     }
 
-    // Reset team assignments
+    // Clear team assignments and return lobby to pre-team state.
     room.teamAssignments = null;
     console.log(`🔄 Teams reset in room ${roomId}`);
 
-    // Send updated team assignments to all players
+    // Broadcast reset team state.
     const teamUpdate = {
       type: "teamAssignments",
       payload: {
@@ -524,7 +474,7 @@ function handleResetTeams(ws, payload) {
 function handleStartGame(ws, payload) {
   try {
     const { roomId, playerId } = payload;
-    console.log(`🎮 Start game requested by ${playerId} in room ${roomId}`);
+    // console.log(`🎮 Start game requested by ${playerId} in room ${roomId}`);
 
     const room = gameRooms[roomId];
     if (!room) {
@@ -538,7 +488,7 @@ function handleStartGame(ws, payload) {
       return;
     }
 
-    // Check if player is room master
+    // Only room master can start the game.
     if (room.roomMaster !== playerId) {
       console.error("❌ Only room master can start the game");
       ws.send(
@@ -550,7 +500,7 @@ function handleStartGame(ws, payload) {
       return;
     }
 
-    // Check if game already started
+    // Reject duplicate start requests.
     if (room.gameStarted) {
       console.error("❌ Game already started");
       ws.send(
@@ -562,7 +512,7 @@ function handleStartGame(ws, payload) {
       return;
     }
 
-    // Check if we have enough players
+    // Require full table.
     if (room.players.length < 4) {
       console.error("❌ Not enough players to start game");
       ws.send(
@@ -576,7 +526,7 @@ function handleStartGame(ws, payload) {
       return;
     }
 
-    // Check if teams have been assigned
+    // Require explicit team assignment before start.
     if (!room.teamAssignments) {
       console.error("❌ Teams not assigned yet");
       ws.send(
@@ -590,7 +540,7 @@ function handleStartGame(ws, payload) {
       return;
     }
 
-    // Start the game
+    // Start game asynchronously (fire-and-forget from message handler).
     startGame(roomId);
   } catch (error) {
     console.error("❌ Error in handleStartGame:", error);
@@ -607,32 +557,23 @@ async function startGame(roomId) {
       playerName: p.playerName,
     }));
 
-    console.log("🔍 DEBUGGING startGame():");
-    console.log("playerData:", JSON.stringify(playerData, null, 2));
-    console.log(
-      "teamAssignments:",
-      JSON.stringify(room.teamAssignments, null, 2)
-    );
-
-    // Create WebSocket IO handler for this game
+    // Create websocket IO adapter used by game engine callbacks.
     const wsIO = new GUIIO(room.players);
 
-    // Initialize game with WebSocket IO and player data (including IDs)
+    // Initialize game engine with room players and chosen team layout.
     const game = new GameController(wsIO, playerData, room.teamAssignments);
     room.game = game;
     room.gameStarted = true;
 
-    // Set up the game
-    console.log("🔍 About to call game.setupGame()...");
+    // Engine setup (players, teams, dealer, intro messages).
     game.setupGame();
-    console.log("🔍 game.setupGame() completed");
 
-    // Sync GUIIO player order with GameController's arranged order
-    console.log("🔄 Syncing GUIIO player order with GameController...");
+
+    // Keep GUI seat order aligned with game engine seat order.
     wsIO.updatePlayerOrder(game.getPlayers());
-    console.log("🔄 GUIIO player order synced!");
+ 
 
-    // Notify all players that game is starting
+    // Notify clients to switch from lobby UI into game UI.
     room.players.forEach((player) => {
       player.ws.send(
         JSON.stringify({
@@ -650,11 +591,9 @@ async function startGame(roomId) {
       );
     });
 
-    // Start the game logic
-    console.log("🎮 About to call game.playMatch()...");
+    // Run match loop until winner, then transition room back to lobby-ready.
     try {
       const winner = await game.playMatch();
-      console.log("🎮 game.playMatch() completed successfully!");
 
       transitionRoomToLobby(roomId, {
         reason: "Match completed",
@@ -663,7 +602,7 @@ async function startGame(roomId) {
           : "Match ended. Returning to lobby.",
       });
 
-      // Re-broadcast lobby-ready room status after a natural match end
+      // Broadcast refreshed lobby snapshot after natural match end.
       broadcastPlayerStatusUpdate(roomId);
     } catch (error) {
       console.error("❌ Error in game.playMatch():", error);
@@ -674,6 +613,7 @@ async function startGame(roomId) {
   }
 }
 
+// Returns room to lobby-ready state without disconnecting participants.
 function transitionRoomToLobby(
   roomId,
   { reason = "Game ended", message = "Game ended", excludePlayerId = null } = {}
@@ -681,7 +621,7 @@ function transitionRoomToLobby(
   const room = gameRooms[roomId];
   if (!room) return false;
 
-  // If not currently in a game, nothing to transition.
+  // No-op if room is already lobby-ready.
   if (!room.gameStarted && !room.game) {
     return false;
   }
@@ -733,10 +673,10 @@ function handleLeaveRoom(ws, payload) {
       excludePlayerId: playerId,
     });
 
-    // Remove player from room immediately
+    // Remove player from roster after notifying room of game end.
     removePlayerFromRoom(roomId, playerId);
 
-    // Send confirmation to the leaving player
+    // Confirm leave action back to requester.
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(
         JSON.stringify({
@@ -755,7 +695,7 @@ function handleLeaveRoom(ws, payload) {
 
 function cleanupPlayerFromRooms(ws, wasDeliberate = false) {
   try {
-    // Find and remove player from any rooms immediately
+    // Find socket owner and remove from its room.
     for (const [roomId, room] of Object.entries(gameRooms)) {
       const playerIndex = room.players.findIndex((p) => p.ws === ws);
       if (playerIndex >= 0) {
@@ -770,7 +710,7 @@ function cleanupPlayerFromRooms(ws, wasDeliberate = false) {
           excludePlayerId: player.playerId,
         });
 
-        // Remove player from room immediately
+        // Remove from room roster and rebroadcast lobby state.
         removePlayerFromRoom(roomId, player.playerId);
         break;
       }
@@ -785,29 +725,27 @@ function removePlayerFromRoom(roomId, playerId) {
     const room = gameRooms[roomId];
     if (!room) return;
 
-    // Remove player from room
+    // Remove player from room roster.
     room.players = room.players.filter((p) => p.playerId !== playerId);
     console.log(`🚫 Removed player ${playerId} from room ${roomId}`);
 
-    // Always reset team assignments when someone leaves because teams become invalid
+    // Team selections become invalid after a player leaves.
     room.teamAssignments = null;
-    console.log(`🔄 Team assignments reset due to player leaving`);
+    // console.log(`🔄 Team assignments reset due to player leaving`);
 
-    // Handle room master change if needed
+    // Transfer room master if the current master left.
     if (room.roomMaster === playerId && room.players.length > 0) {
-      // Transfer room master to first remaining player
       room.roomMaster = room.players[0].playerId;
       console.log(
         `👑 Room master transferred to ${room.players[0].playerName}`
       );
     }
 
-    // Clean up empty rooms
+    // Delete empty room, otherwise rebroadcast lobby state.
     if (room.players.length === 0) {
       console.log(`🗑️ Removing empty room ${roomId}`);
       delete gameRooms[roomId];
     } else {
-      // Broadcast updated room state
       broadcastPlayerStatusUpdate(roomId);
     }
   } catch (error) {
@@ -820,7 +758,8 @@ function broadcastPlayerStatusUpdate(roomId) {
     const room = gameRooms[roomId];
     if (!room) return;
 
-    const connectedPlayers = room.players; // All players are connected (no disconnected state)
+    // All entries are live connections in the current room model.
+    const connectedPlayers = room.players;
 
     const statusUpdate = {
       type: "playerListUpdate",
@@ -841,7 +780,7 @@ function broadcastPlayerStatusUpdate(roomId) {
       },
     };
 
-    // Send to all connected players
+    // Broadcast current lobby snapshot to all connected players.
     connectedPlayers.forEach((player) => {
       if (player.ws.readyState === WebSocket.OPEN) {
         player.ws.send(JSON.stringify(statusUpdate));

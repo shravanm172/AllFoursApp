@@ -6,13 +6,12 @@
 // 2. Begging phase (beg/stand, give 1/run pack)
 // 3. Playing all tricks (to be implemented later)
 // 4. Awarding points for High, Low, Jack, Game
-//
-// Interactive version with CLI input for user decisions
+
+
 
 import { Deck } from "./Deck.js";
 import { CardComparator } from "./CardComparator.js";
 import { Trick } from "./Trick.js";
-// import * as readline from "readline";
 
 export class Round {
   constructor(players, dealer, teamA, teamB, ioHandler) {
@@ -29,7 +28,7 @@ export class Round {
     this.isBeggingPhase = true; // For teammate hand visibility logic
   }
 
-  // Main method to play a complete round
+  // ==================Main method to play a complete round===================
   async playRound() {
     this.io.showMessage(
       `Starting new round - ${this.dealer.getName()} is dealing...`,
@@ -46,7 +45,6 @@ export class Round {
     this.deck.shuffle();
 
     // Deal 6 cards to each player
-    this.io.showMessage(`\n${this.dealer.getName()} deals...`, "log");
     const dealSuccess = this.deck.deal(this.players, 6);
     if (!dealSuccess) {
       this.io.showMessage(
@@ -61,8 +59,7 @@ export class Round {
     const kickedCard = this.deck.kick();
     this.trumpSuit = kickedCard.getSuit();
     this.io.showKickedCard(kickedCard);
-    // this.io.showMessage(`🎺 Trump suit for this round: ${this.trumpSuit}`);
-
+   
     // Award points for kicked card (Ace=1, 6=2, Jack=3)
     this.awardKickPoints(kickedCard);
 
@@ -73,9 +70,6 @@ export class Round {
 
     // Show all player hands
     this.io.showPlayerHands(this.players);
-
-    // Start begging phase
-    this.io.showMessage("🙏 Begging Phase", "log");
 
     try {
       const beggingResult = await this.beggingPhase();
@@ -123,9 +117,6 @@ export class Round {
       `🔻 Low trump: ${lowTrump ? lowTrump.card.toString() : "None"}`
     );
 
-    // Play all tricks
-    this.io.showMessage("🎯 Starting trick playing phase...", "log");
-
     // Begging phase is now over - trick playing begins
     this.isBeggingPhase = false;
 
@@ -134,18 +125,12 @@ export class Round {
     // Allocate end-of-round points (stubbed for now)
     this.allocateEndOfRoundPoints();
 
-    this.io.showMessage("\n✅ Round completed successfully!", "log");
-    return true; // Indicate round completed
+    return true; 
   }
 
   // Begging phase: player to right of dealer can beg or stand, dealer can give 1 or run the pack
   async beggingPhase() {
     const beggingPlayer = this.getPlayerToRight(this.dealer);
-
-    // this.io.showMessage(
-    //   `\n${beggingPlayer.getName()}, it's your turn to beg or stand.`,  "log"
-    // );
-    this.io.showMessage(`Current trump: ${this.trumpSuit}`, "log");
 
     // Check if begging player has any trump cards
     const beggingPlayerTrumpCount = this.countTrumpCards(beggingPlayer);
@@ -158,18 +143,11 @@ export class Round {
         { yesText: "Beg", noText: "Stand" }
       );
 
-      console.log("🙏 Begging response received:", begResponse);
-      console.log("🙏 Response type:", typeof begResponse);
-      console.log("🙏 Response toLowerCase():", begResponse?.toLowerCase());
-
       if (begResponse.toLowerCase() === "yes") {
-        console.log("🙏 Player chose to beg");
         break; // Player begs - continue to dealer response
       } else if (begResponse.toLowerCase() === "no") {
-        console.log("🙏 Player chose to stand");
         // Player wants to stand - check if they have trump
         if (beggingPlayerTrumpCount === 0) {
-          console.log("🙏 Player cannot stand - no trump cards");
           this.io.showMessage(
             `${beggingPlayer.getName()} cannot stand with zero trump cards!`,
             { privatePlayerId: beggingPlayer.getId() }
@@ -177,15 +155,11 @@ export class Round {
           // this.io.showMessage(`🙏 You must beg when you have no trump.`, "overlay");
           continue; // Ask again
         } else {
-          console.log("🙏 Player stands successfully");
           this.io.showMessage(`${beggingPlayer.getName()} stands`, "both");
           return false; // Round continues normally
         }
       } else {
-        console.log("🙏 Invalid response:", begResponse);
-        this.io.showMessage(`Please enter 'yes' to beg or 'no' to stand.`, {
-          privatePlayerId: beggingPlayer.getId(),
-        });
+        console.log("X Invalid begResponse:", begResponse);
         continue; // Ask again
       }
     }
@@ -274,7 +248,7 @@ export class Round {
   // Run the pack until trump changes or pack runs out
   async runPack() {
     let attempts = 0;
-    const maxAttempts = 10; // Safety limit
+    const maxAttempts = 3; // Defensive assertion against infinite loop
 
     while (attempts < maxAttempts) {
       attempts++;
@@ -535,7 +509,7 @@ export class Round {
     }
 
     // Ensure final trick state is shown after loop exits
-    console.log("🎯 Trick completed - showing final state before delay");
+    
     console.log("🎯 Final playedCards:", trick.playedCards.length, trick.playedCards.map(entry => `${entry.player.getName()}: ${entry.card.toString()}`));
     this.io.showTrickState([...trick.playedCards]);
     
@@ -544,7 +518,7 @@ export class Round {
       await new Promise((resolve) => setTimeout(resolve, 500)); // Extra delay to ensure final card is rendered
     }
 
-    // Give users time to see the trick result before clearing (only in GUI mode)
+    // Give users time to see the trick result before clearing 
     if (this.io.constructor.name === "GUIIO") {
       await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 second delay
     }
@@ -562,8 +536,7 @@ export class Round {
   }
 
   // Allocate end-of-round points (High, Low, Jack, Game - each worth 1 point)
-  // Note: This is different from kick points which are awarded immediately during begging phase
-  allocateEndOfRoundPoints() {
+    allocateEndOfRoundPoints() {
     this.io.showMessage("🏆 End of Round - Point Allocation", "log");
 
     let gameEnded = false;

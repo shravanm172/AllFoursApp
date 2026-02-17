@@ -27,7 +27,7 @@ export class GameController {
     this.io = gameIO; // Use the provided IO handler for user interaction
     this.playerData = playerData; // Array of {playerId, playerName} objects for multiplayer
     this.teamAssignments = teamAssignments; // Team assignments from server
-    this.matchTargetScore = 3;
+    this.matchTargetScore = 14;
   }
 
   /*
