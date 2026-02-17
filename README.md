@@ -64,7 +64,7 @@ Client UI (React)
         - gameEnded, leftRoom
 
 ### 4) Client Socket Transport
-
+- Citation: GPT-5.3-Codex helped with building the WebSocket layer
 - File: all-fours/src/components/WebSocketClient.jsx
 - Responsibilities:
         - Open/close/reconnect WebSocket
@@ -73,7 +73,7 @@ Client UI (React)
         - Expose send* command methods to UI
 
 ### 5) Server Transport + Room Router
-
+- Citation: GPT-5.3-Codex helped with handling WebSocket connections
 - File: all-fours/server/server.js
 - Responsibilities:
         - Accept WebSocket connections

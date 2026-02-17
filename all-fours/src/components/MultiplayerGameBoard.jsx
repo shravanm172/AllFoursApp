@@ -227,17 +227,59 @@ export const MultiplayerGameBoard = ({ roomId, playerId, playerName, onReturnToM
 
   // Get match state from game state or use current match state as fallback
   const getMatchState = useCallback(() => {
+    const derivedTeamAName =
+      players.length >= 3 ? `${players[0]?.name} & ${players[2]?.name}` : null;
+    const derivedTeamBName =
+      players.length >= 4 ? `${players[1]?.name} & ${players[3]?.name}` : null;
+
+    const normalizeWinner = (winnerName) => {
+      if (!winnerName) return null;
+      if (winnerName === 'Team A' && derivedTeamAName) return derivedTeamAName;
+      if (winnerName === 'Team B' && derivedTeamBName) return derivedTeamBName;
+      return winnerName;
+    };
+
     if (gameState && gameState.teamA && gameState.teamB) {
       return {
-        teamA: gameState.teamA,
-        teamB: gameState.teamB,
+        teamA: {
+          ...gameState.teamA,
+          name:
+            gameState.teamA.name === 'Team A' && derivedTeamAName
+              ? derivedTeamAName
+              : gameState.teamA.name,
+        },
+        teamB: {
+          ...gameState.teamB,
+          name:
+            gameState.teamB.name === 'Team B' && derivedTeamBName
+              ? derivedTeamBName
+              : gameState.teamB.name,
+        },
         isMatchOver: gameState.isMatchOver || false,
-        winner: gameState.winner || null,
+        winner: normalizeWinner(gameState.winner || null),
         currentDealer: gameState.currentDealer || null,
       };
     }
-    return matchState;
-  }, [gameState, matchState]);
+
+    return {
+      ...matchState,
+      teamA: {
+        ...matchState.teamA,
+        name:
+          matchState.teamA?.name === 'Team A' && derivedTeamAName
+            ? derivedTeamAName
+            : matchState.teamA?.name,
+      },
+      teamB: {
+        ...matchState.teamB,
+        name:
+          matchState.teamB?.name === 'Team B' && derivedTeamBName
+            ? derivedTeamBName
+            : matchState.teamB?.name,
+      },
+      winner: normalizeWinner(matchState.winner || null),
+    };
+  }, [gameState, matchState, players]);
 
   return (
     <div className={`game-board ${!gameState ? 'lobby-mode' : 'game-mode'}`}>

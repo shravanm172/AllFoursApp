@@ -1,3 +1,4 @@
+// AI Usage Citation: Portions of this file were developed with assistance from GitHub Copilot (GPT-5.3-Codex).
 // WebSocketClient.jsx
 // Component to handle WebSocket connection to multiplayer server
 // Protocol adapter

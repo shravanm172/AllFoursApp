@@ -6867,3 +6867,233 @@
 [2026-02-17T01:10:24.806Z] [LOG] ✅ Player 4 added to room 1. Total players: 3
 [2026-02-17T01:10:24.842Z] [LOG] 🚪 Player 3 (player-1771288850447-r26q74agb-58) joining room 1
 [2026-02-17T01:10:24.843Z] [LOG] ✅ Player 3 added to room 1. Total players: 4
+[2026-02-17T01:59:51.809Z] [LOG] ❌ WebSocket connection closed with code 1000: page-unload
+[2026-02-17T01:59:51.809Z] [LOG] 🧹 Player 1 disconnected from room 1 - removing immediately
+[2026-02-17T01:59:51.810Z] [LOG] 🚫 Removed player player-1771288843282-g61il8xms-426 from room 1
+[2026-02-17T01:59:51.810Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T01:59:52.111Z] [LOG] ❌ WebSocket connection closed with code 1000: page-unload
+[2026-02-17T01:59:52.112Z] [LOG] 🧹 Player 4 disconnected from room 1 - removing immediately
+[2026-02-17T01:59:52.112Z] [LOG] 🚫 Removed player player-1771288851211-ixjny2o7k-51 from room 1
+[2026-02-17T01:59:52.112Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T01:59:52.423Z] [LOG] ❌ WebSocket connection closed with code 1000: page-unload
+[2026-02-17T01:59:52.423Z] [LOG] 🧹 Player 2 disconnected from room 1 - removing immediately
+[2026-02-17T01:59:52.424Z] [LOG] 🚫 Removed player player-1771288849603-pqbvzifof-47 from room 1
+[2026-02-17T01:59:52.424Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T01:59:52.424Z] [LOG] 👑 Room master transferred to 3
+[2026-02-17T01:59:52.738Z] [LOG] ❌ WebSocket connection closed with code 1000: page-unload
+[2026-02-17T01:59:52.738Z] [LOG] 🧹 Player 3 disconnected from room 1 - removing immediately
+[2026-02-17T01:59:52.739Z] [LOG] 🚫 Removed player player-1771288850447-r26q74agb-58 from room 1
+[2026-02-17T01:59:52.739Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T01:59:52.739Z] [LOG] 🗑️ Removing empty room 1
+[2026-02-17T02:01:08.206Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T02:01:08.206Z] [LOG] 🚪 Player 1 (player-1771293665752-vk2a1jac1-341) joining room 1
+[2026-02-17T02:01:08.207Z] [LOG] 👑 1 is now the room master for room 1
+[2026-02-17T02:01:08.207Z] [LOG] ✅ Player 1 added to room 1. Total players: 1
+[2026-02-17T02:01:08.211Z] [LOG] ❌ WebSocket connection closed with code 1000: component-unmount
+[2026-02-17T02:01:08.211Z] [LOG] 🧹 Player 1 disconnected from room 1 - removing immediately
+[2026-02-17T02:01:08.211Z] [LOG] 🚫 Removed player player-1771293665752-vk2a1jac1-341 from room 1
+[2026-02-17T02:01:08.212Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T02:01:08.212Z] [LOG] 🗑️ Removing empty room 1
+[2026-02-17T02:01:08.515Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T02:01:08.515Z] [LOG] 🚪 Player 1 (player-1771293665752-vk2a1jac1-341) joining room 1
+[2026-02-17T02:01:08.516Z] [LOG] 👑 1 is now the room master for room 1
+[2026-02-17T02:01:08.516Z] [LOG] ✅ Player 1 added to room 1. Total players: 1
+[2026-02-17T02:01:13.247Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T02:01:13.249Z] [LOG] 🚪 Player 2 (player-1771293669503-ob56m9pbk-31) joining room 1
+[2026-02-17T02:01:13.249Z] [LOG] ✅ Player 2 added to room 1. Total players: 2
+[2026-02-17T02:01:13.252Z] [LOG] ❌ WebSocket connection closed with code 1000: component-unmount
+[2026-02-17T02:01:13.252Z] [LOG] 🧹 Player 2 disconnected from room 1 - removing immediately
+[2026-02-17T02:01:13.253Z] [LOG] 🚫 Removed player player-1771293669503-ob56m9pbk-31 from room 1
+[2026-02-17T02:01:13.253Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T02:01:13.559Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T02:01:13.559Z] [LOG] 🚪 Player 2 (player-1771293669503-ob56m9pbk-31) joining room 1
+[2026-02-17T02:01:13.560Z] [LOG] ✅ Player 2 added to room 1. Total players: 2
+[2026-02-17T02:01:15.699Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T02:01:15.700Z] [LOG] 🚪 Player 3 (player-1771293670386-q4n94yfs8-28) joining room 1
+[2026-02-17T02:01:15.700Z] [LOG] ✅ Player 3 added to room 1. Total players: 3
+[2026-02-17T02:01:15.703Z] [LOG] ❌ WebSocket connection closed with code 1000: component-unmount
+[2026-02-17T02:01:15.704Z] [LOG] 🧹 Player 3 disconnected from room 1 - removing immediately
+[2026-02-17T02:01:15.704Z] [LOG] 🚫 Removed player player-1771293670386-q4n94yfs8-28 from room 1
+[2026-02-17T02:01:15.704Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T02:01:16.015Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T02:01:16.016Z] [LOG] 🚪 Player 3 (player-1771293670386-q4n94yfs8-28) joining room 1
+[2026-02-17T02:01:16.016Z] [LOG] ✅ Player 3 added to room 1. Total players: 3
+[2026-02-17T02:01:19.117Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T02:01:19.117Z] [LOG] 🚪 Player 4 (player-1771293671310-y4hnbis2v-30) joining room 1
+[2026-02-17T02:01:19.118Z] [LOG] ✅ Player 4 added to room 1. Total players: 4
+[2026-02-17T02:01:19.129Z] [LOG] ❌ WebSocket connection closed with code 1000: component-unmount
+[2026-02-17T02:01:19.129Z] [LOG] 🧹 Player 4 disconnected from room 1 - removing immediately
+[2026-02-17T02:01:19.130Z] [LOG] 🚫 Removed player player-1771293671310-y4hnbis2v-30 from room 1
+[2026-02-17T02:01:19.130Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T02:01:19.435Z] [LOG] 📡 New WebSocket connection established
+[2026-02-17T02:01:19.436Z] [LOG] 🚪 Player 4 (player-1771293671310-y4hnbis2v-30) joining room 1
+[2026-02-17T02:01:19.436Z] [LOG] ✅ Player 4 added to room 1. Total players: 4
+[2026-02-17T02:01:24.474Z] [LOG] 👥 player-1771293665752-vk2a1jac1-341 selected player-1771293669503-ob56m9pbk-31 as teammate in room 1
+[2026-02-17T02:01:24.475Z] [LOG] 🔍 DEBUGGING team assignments:
+[2026-02-17T02:01:24.475Z] [LOG] allPlayerIds: ["player-1771293665752-vk2a1jac1-341","player-1771293669503-ob56m9pbk-31","player-1771293670386-q4n94yfs8-28","player-1771293671310-y4hnbis2v-30"]
+[2026-02-17T02:01:24.475Z] [LOG] allPlayerNames: ["1 (player-1771293665752-vk2a1jac1-341)","2 (player-1771293669503-ob56m9pbk-31)","3 (player-1771293670386-q4n94yfs8-28)","4 (player-1771293671310-y4hnbis2v-30)"]
+[2026-02-17T02:01:24.476Z] [LOG] room master: player-1771293665752-vk2a1jac1-341
+[2026-02-17T02:01:24.476Z] [LOG] selected teammate: player-1771293669503-ob56m9pbk-31
+[2026-02-17T02:01:24.476Z] [LOG] team1: ["player-1771293665752-vk2a1jac1-341","player-1771293669503-ob56m9pbk-31"]
+[2026-02-17T02:01:24.476Z] [LOG] team2: ["player-1771293670386-q4n94yfs8-28","player-1771293671310-y4hnbis2v-30"]
+[2026-02-17T02:01:24.477Z] [LOG] final teamAssignments: {
+  "roomMasterTeammate": "player-1771293669503-ob56m9pbk-31",
+  "team1": [
+    "player-1771293665752-vk2a1jac1-341",
+    "player-1771293669503-ob56m9pbk-31"
+  ],
+  "team2": [
+    "player-1771293670386-q4n94yfs8-28",
+    "player-1771293671310-y4hnbis2v-30"
+  ]
+}
+[2026-02-17T02:01:24.477Z] [LOG] ✅ Teams assigned: Team 1: player-1771293665752-vk2a1jac1-341, player-1771293669503-ob56m9pbk-31, Team 2: player-1771293670386-q4n94yfs8-28, player-1771293671310-y4hnbis2v-30
+[2026-02-17T02:01:24.999Z] [LOG] 🎮 Start game requested by player-1771293665752-vk2a1jac1-341 in room 1
+[2026-02-17T02:01:24.999Z] [LOG] 🎮 Starting game in room 1
+[2026-02-17T02:01:25.000Z] [LOG] 🔍 DEBUGGING startGame():
+[2026-02-17T02:01:25.000Z] [LOG] playerData: [
+  {
+    "playerId": "player-1771293665752-vk2a1jac1-341",
+    "playerName": "1"
+  },
+  {
+    "playerId": "player-1771293669503-ob56m9pbk-31",
+    "playerName": "2"
+  },
+  {
+    "playerId": "player-1771293670386-q4n94yfs8-28",
+    "playerName": "3"
+  },
+  {
+    "playerId": "player-1771293671310-y4hnbis2v-30",
+    "playerName": "4"
+  }
+]
+[2026-02-17T02:01:25.000Z] [LOG] teamAssignments: {
+  "roomMasterTeammate": "player-1771293669503-ob56m9pbk-31",
+  "team1": [
+    "player-1771293665752-vk2a1jac1-341",
+    "player-1771293669503-ob56m9pbk-31"
+  ],
+  "team2": [
+    "player-1771293670386-q4n94yfs8-28",
+    "player-1771293671310-y4hnbis2v-30"
+  ]
+}
+[2026-02-17T02:01:25.001Z] [LOG] 🔍 About to call game.setupGame()...
+[2026-02-17T02:01:25.001Z] [LOG] 🔍 DEBUGGING setupPlayers():
+[2026-02-17T02:01:25.001Z] [LOG] Original playerData order: ["1 (player-1771293665752-vk2a1jac1-341)","2 (player-1771293669503-ob56m9pbk-31)","3 (player-1771293670386-q4n94yfs8-28)","4 (player-1771293671310-y4hnbis2v-30)"]
+[2026-02-17T02:01:25.001Z] [LOG] teamAssignments after setupPlayers(): {
+  "roomMasterTeammate": "player-1771293669503-ob56m9pbk-31",
+  "team1": [
+    "player-1771293665752-vk2a1jac1-341",
+    "player-1771293669503-ob56m9pbk-31"
+  ],
+  "team2": [
+    "player-1771293670386-q4n94yfs8-28",
+    "player-1771293671310-y4hnbis2v-30"
+  ]
+}
+[2026-02-17T02:01:25.002Z] [LOG] team1PlayerData: ["1 (player-1771293665752-vk2a1jac1-341)","2 (player-1771293669503-ob56m9pbk-31)"]
+[2026-02-17T02:01:25.002Z] [LOG] team2PlayerData: ["3 (player-1771293670386-q4n94yfs8-28)","4 (player-1771293671310-y4hnbis2v-30)"]
+[2026-02-17T02:01:25.002Z] [LOG] arrangedPlayerData: ["1 (player-1771293665752-vk2a1jac1-341)","3 (player-1771293670386-q4n94yfs8-28)","2 (player-1771293669503-ob56m9pbk-31)","4 (player-1771293671310-y4hnbis2v-30)"]
+[2026-02-17T02:01:25.003Z] [LOG] ✅ Players arranged for team seating:
+[2026-02-17T02:01:25.003Z] [LOG] Position 0: 1 (Team 1)
+[2026-02-17T02:01:25.003Z] [LOG] Position 1: 3 (Team 2)
+[2026-02-17T02:01:25.003Z] [LOG] Position 2: 2 (Team 1 - teammate of 0)
+[2026-02-17T02:01:25.003Z] [LOG] Position 3: 4 (Team 2 - teammate of 1)
+[2026-02-17T02:01:25.004Z] [LOG] 🔍 DEBUGGING setupTeams():
+[2026-02-17T02:01:25.004Z] [LOG] teamAssignments: {
+  "roomMasterTeammate": "player-1771293669503-ob56m9pbk-31",
+  "team1": [
+    "player-1771293665752-vk2a1jac1-341",
+    "player-1771293669503-ob56m9pbk-31"
+  ],
+  "team2": [
+    "player-1771293670386-q4n94yfs8-28",
+    "player-1771293671310-y4hnbis2v-30"
+  ]
+}
+[2026-02-17T02:01:25.004Z] [LOG] players array: ["1 (ID: player-1771293665752-vk2a1jac1-341)","3 (ID: player-1771293670386-q4n94yfs8-28)","2 (ID: player-1771293669503-ob56m9pbk-31)","4 (ID: player-1771293671310-y4hnbis2v-30)"]
+[2026-02-17T02:01:25.005Z] [LOG] ✅ Using server team assignments
+[2026-02-17T02:01:25.005Z] [LOG] ✅ Teams set up using arranged player positions:
+[2026-02-17T02:01:25.005Z] [LOG] Team A: 1 & 2
+[2026-02-17T02:01:25.005Z] [LOG] Team B: 3 & 4
+[2026-02-17T02:01:25.005Z] [LOG] 🏁 FINAL TEAMS:
+[2026-02-17T02:01:25.006Z] [LOG] Team A: 1 (player-1771293665752-vk2a1jac1-341) & 2 (player-1771293669503-ob56m9pbk-31)
+[2026-02-17T02:01:25.006Z] [LOG] Team B: 3 (player-1771293670386-q4n94yfs8-28) & 4 (player-1771293671310-y4hnbis2v-30)
+[2026-02-17T02:01:25.006Z] [LOG] 📝 Game message (log): Match setup complete. 1 is the first dealer.
+[2026-02-17T02:01:25.006Z] [LOG] 📝 Game message (log): 1 & 3: 1 & 2
+[2026-02-17T02:01:25.007Z] [LOG] 📝 Game message (log): 2 & 4: 3 & 4
+[2026-02-17T02:01:25.007Z] [LOG] 🔍 game.setupGame() completed
+[2026-02-17T02:01:25.007Z] [LOG] 🔄 Syncing GUIIO player order with GameController...
+[2026-02-17T02:01:25.008Z] [LOG] 🔄 UPDATING GUIIO player order to match GameController
+[2026-02-17T02:01:25.008Z] [LOG] 🔄 Old GUIIO order: ["1 (player-1771293665752-vk2a1jac1-341)","2 (player-1771293669503-ob56m9pbk-31)","3 (player-1771293670386-q4n94yfs8-28)","4 (player-1771293671310-y4hnbis2v-30)"]
+[2026-02-17T02:01:25.008Z] [LOG] 🔄 New GUIIO order: ["1 (player-1771293665752-vk2a1jac1-341)","3 (player-1771293670386-q4n94yfs8-28)","2 (player-1771293669503-ob56m9pbk-31)","4 (player-1771293671310-y4hnbis2v-30)"]
+[2026-02-17T02:01:25.009Z] [LOG] 🔄 GUIIO player order synced!
+[2026-02-17T02:01:25.009Z] [LOG] 🎮 About to call game.playMatch()...
+[2026-02-17T02:01:25.009Z] [LOG] 🎯 Starting round 1
+[2026-02-17T02:01:25.009Z] [LOG] 📝 Game message (log): ROUND 1
+[2026-02-17T02:01:25.010Z] [LOG] 🎯 About to call startRound() for round 1
+[2026-02-17T02:01:25.010Z] [LOG] 📝 Game message (log): Starting new round - 1 is dealing...
+[2026-02-17T02:01:25.011Z] [LOG] 📊 Showing scores
+[2026-02-17T02:01:25.011Z] [LOG] 📝 Game message (log): 📊 Round Scores:
+1 & 2: 0 points
+3 & 4: 0 points
+[2026-02-17T02:01:25.011Z] [LOG] 📝 Game message (log): 
+1 deals...
+[2026-02-17T02:01:25.012Z] [LOG] 🃏 Showing kicked card: 9 of Clubs
+[2026-02-17T02:01:25.012Z] [LOG] 🔍 DEBUG ROUND - About to call showPlayerHands with: {"roundExists":true,"isBeggingPhase":true,"beggar":"4","dealer":"1"}
+[2026-02-17T02:01:25.012Z] [LOG] 🔄 Rotated players for player-1771293665752-vk2a1jac1-341: ["1","3","2","4"]
+[2026-02-17T02:01:25.013Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 1 to 1: {"id":"player-1771293665752-vk2a1jac1-341","name":"1","handSize":6,"actualCardsCount":6,"sampleCards":["10 of Clubs","Jack of Clubs"]}
+[2026-02-17T02:01:25.013Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 3 to 1: {"id":"player-1771293670386-q4n94yfs8-28","name":"3","handSize":6,"actualCardsCount":6,"sampleCards":["3 of Diamonds","9 of Hearts"]}
+[2026-02-17T02:01:25.013Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 2 to 1: {"id":"player-1771293669503-ob56m9pbk-31","name":"2","handSize":6,"actualCardsCount":6,"sampleCards":["4 of Clubs","King of Diamonds"]}
+[2026-02-17T02:01:25.014Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 4 to 1: {"id":"player-1771293671310-y4hnbis2v-30","name":"4","handSize":6,"actualCardsCount":6,"sampleCards":["King of Clubs","Queen of Diamonds"]}
+[2026-02-17T02:01:25.014Z] [LOG] 🔍 SERVER - Sending game data to 1: {"currentDealer":"1","isBeggingPhase":true,"beggarId":"player-1771293671310-y4hnbis2v-30"}
+[2026-02-17T02:01:25.014Z] [LOG] 📤 sendToPlayer: {"to":"player-1771293665752-vk2a1jac1-341","type":"gameState","payload":{"players":[{"id":"player-1771293665752-vk2a1jac1-341","name":"1","handSize":6,"hand":[{"suit":"Clubs","rank":"10","toString":"10 of Clubs"},{"suit":"Clubs","rank":"Jack","toString":"Jack of Clubs"},{"suit":"Clubs","rank":"Ace","toString":"Ace of Clubs"},{"suit":"Diamonds","rank":"5","toString":"5 of Diamonds"},{"suit":"Diamonds","rank":"8","toString":"8 of Diamonds"},{"suit":"Spades","rank":"Jack","toString":"Jack of Spades"}]},{"id":"player-1771293670386-q4n94yfs8-28","name":"3","handSize":6,"hand":[{"suit":"Diamonds","rank":"3","toString":"3 of Diamonds"},{"suit":"Hearts","rank":"9","toString":"9 of Hearts"},{"suit":"Hearts","rank":"Jack","toString":"Jack of Hearts"},{"suit":"Hearts","rank":"King","toString":"King of Hearts"},{"suit":"Spades","rank":"5","toString":"5 of Spades"},{"suit":"Spades","rank":"King","toString":"King of Spades"}]},{"id":"player-1771293669503-ob56m9pbk-31","name":"2","handSize":6,"hand":[{"suit":"Clubs","rank":"4","toString":"4 of Clubs"},{"suit":"Diamonds","rank":"King","toString":"King of Diamonds"},{"suit":"Hearts","rank":"2","toString":"2 of Hearts"},{"suit":"Hearts","rank":"4","toString":"4 of Hearts"},{"suit":"Hearts","rank":"6","toString":"6 of Hearts"},{"suit":"Hearts","rank":"Queen","toString":"Queen of Hearts"}]},{"id":"player-1771293671310-y4hnbis2v-30","name":"4","handSize":6,"hand":[{"suit":"Clubs","rank":"King","toString":"King of Clubs"},{"suit":"Diamonds","rank":"Queen","toString":"Queen of Diamonds"},{"suit":"Hearts","rank":"3","toString":"3 of Hearts"},{"suit":"Hearts","rank":"5","toString":"5 of Hearts"},{"suit":"Hearts","rank":"10","toString":"10 of Hearts"},{"suit":"Spades","rank":"10","toString":"10 of Spades"}]}],"currentDealer":"1","isBeggingPhase":true,"beggarId":"player-1771293671310-y4hnbis2v-30","matchId":null}}
+[2026-02-17T02:01:25.015Z] [LOG] 🔄 Rotated players for player-1771293670386-q4n94yfs8-28: ["3","2","4","1"]
+[2026-02-17T02:01:25.015Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 3 to 3: {"id":"player-1771293670386-q4n94yfs8-28","name":"3","handSize":6,"actualCardsCount":6,"sampleCards":["3 of Diamonds","9 of Hearts"]}
+[2026-02-17T02:01:25.015Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 2 to 3: {"id":"player-1771293669503-ob56m9pbk-31","name":"2","handSize":6,"actualCardsCount":6,"sampleCards":["4 of Clubs","King of Diamonds"]}
+[2026-02-17T02:01:25.015Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 4 to 3: {"id":"player-1771293671310-y4hnbis2v-30","name":"4","handSize":6,"actualCardsCount":6,"sampleCards":["King of Clubs","Queen of Diamonds"]}
+[2026-02-17T02:01:25.016Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 1 to 3: {"id":"player-1771293665752-vk2a1jac1-341","name":"1","handSize":6,"actualCardsCount":6,"sampleCards":["10 of Clubs","Jack of Clubs"]}
+[2026-02-17T02:01:25.016Z] [LOG] 🔍 SERVER - Sending game data to 3: {"currentDealer":"1","isBeggingPhase":true,"beggarId":"player-1771293671310-y4hnbis2v-30"}
+[2026-02-17T02:01:25.017Z] [LOG] 📤 sendToPlayer: {"to":"player-1771293670386-q4n94yfs8-28","type":"gameState","payload":{"players":[{"id":"player-1771293670386-q4n94yfs8-28","name":"3","handSize":6,"hand":[{"suit":"Diamonds","rank":"3","toString":"3 of Diamonds"},{"suit":"Hearts","rank":"9","toString":"9 of Hearts"},{"suit":"Hearts","rank":"Jack","toString":"Jack of Hearts"},{"suit":"Hearts","rank":"King","toString":"King of Hearts"},{"suit":"Spades","rank":"5","toString":"5 of Spades"},{"suit":"Spades","rank":"King","toString":"King of Spades"}]},{"id":"player-1771293669503-ob56m9pbk-31","name":"2","handSize":6,"hand":[{"suit":"Clubs","rank":"4","toString":"4 of Clubs"},{"suit":"Diamonds","rank":"King","toString":"King of Diamonds"},{"suit":"Hearts","rank":"2","toString":"2 of Hearts"},{"suit":"Hearts","rank":"4","toString":"4 of Hearts"},{"suit":"Hearts","rank":"6","toString":"6 of Hearts"},{"suit":"Hearts","rank":"Queen","toString":"Queen of Hearts"}]},{"id":"player-1771293671310-y4hnbis2v-30","name":"4","handSize":6,"hand":[{"suit":"Clubs","rank":"King","toString":"King of Clubs"},{"suit":"Diamonds","rank":"Queen","toString":"Queen of Diamonds"},{"suit":"Hearts","rank":"3","toString":"3 of Hearts"},{"suit":"Hearts","rank":"5","toString":"5 of Hearts"},{"suit":"Hearts","rank":"10","toString":"10 of Hearts"},{"suit":"Spades","rank":"10","toString":"10 of Spades"}]},{"id":"player-1771293665752-vk2a1jac1-341","name":"1","handSize":6,"hand":[{"suit":"Clubs","rank":"10","toString":"10 of Clubs"},{"suit":"Clubs","rank":"Jack","toString":"Jack of Clubs"},{"suit":"Clubs","rank":"Ace","toString":"Ace of Clubs"},{"suit":"Diamonds","rank":"5","toString":"5 of Diamonds"},{"suit":"Diamonds","rank":"8","toString":"8 of Diamonds"},{"suit":"Spades","rank":"Jack","toString":"Jack of Spades"}]}],"currentDealer":"1","isBeggingPhase":true,"beggarId":"player-1771293671310-y4hnbis2v-30","matchId":null}}
+[2026-02-17T02:01:25.017Z] [LOG] 🔄 Rotated players for player-1771293669503-ob56m9pbk-31: ["2","4","1","3"]
+[2026-02-17T02:01:25.017Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 2 to 2: {"id":"player-1771293669503-ob56m9pbk-31","name":"2","handSize":6,"actualCardsCount":6,"sampleCards":["4 of Clubs","King of Diamonds"]}
+[2026-02-17T02:01:25.017Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 4 to 2: {"id":"player-1771293671310-y4hnbis2v-30","name":"4","handSize":6,"actualCardsCount":6,"sampleCards":["King of Clubs","Queen of Diamonds"]}
+[2026-02-17T02:01:25.018Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 1 to 2: {"id":"player-1771293665752-vk2a1jac1-341","name":"1","handSize":6,"actualCardsCount":6,"sampleCards":["10 of Clubs","Jack of Clubs"]}
+[2026-02-17T02:01:25.018Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 3 to 2: {"id":"player-1771293670386-q4n94yfs8-28","name":"3","handSize":6,"actualCardsCount":6,"sampleCards":["3 of Diamonds","9 of Hearts"]}
+[2026-02-17T02:01:25.018Z] [LOG] 🔍 SERVER - Sending game data to 2: {"currentDealer":"1","isBeggingPhase":true,"beggarId":"player-1771293671310-y4hnbis2v-30"}
+[2026-02-17T02:01:25.019Z] [LOG] 📤 sendToPlayer: {"to":"player-1771293669503-ob56m9pbk-31","type":"gameState","payload":{"players":[{"id":"player-1771293669503-ob56m9pbk-31","name":"2","handSize":6,"hand":[{"suit":"Clubs","rank":"4","toString":"4 of Clubs"},{"suit":"Diamonds","rank":"King","toString":"King of Diamonds"},{"suit":"Hearts","rank":"2","toString":"2 of Hearts"},{"suit":"Hearts","rank":"4","toString":"4 of Hearts"},{"suit":"Hearts","rank":"6","toString":"6 of Hearts"},{"suit":"Hearts","rank":"Queen","toString":"Queen of Hearts"}]},{"id":"player-1771293671310-y4hnbis2v-30","name":"4","handSize":6,"hand":[{"suit":"Clubs","rank":"King","toString":"King of Clubs"},{"suit":"Diamonds","rank":"Queen","toString":"Queen of Diamonds"},{"suit":"Hearts","rank":"3","toString":"3 of Hearts"},{"suit":"Hearts","rank":"5","toString":"5 of Hearts"},{"suit":"Hearts","rank":"10","toString":"10 of Hearts"},{"suit":"Spades","rank":"10","toString":"10 of Spades"}]},{"id":"player-1771293665752-vk2a1jac1-341","name":"1","handSize":6,"hand":[{"suit":"Clubs","rank":"10","toString":"10 of Clubs"},{"suit":"Clubs","rank":"Jack","toString":"Jack of Clubs"},{"suit":"Clubs","rank":"Ace","toString":"Ace of Clubs"},{"suit":"Diamonds","rank":"5","toString":"5 of Diamonds"},{"suit":"Diamonds","rank":"8","toString":"8 of Diamonds"},{"suit":"Spades","rank":"Jack","toString":"Jack of Spades"}]},{"id":"player-1771293670386-q4n94yfs8-28","name":"3","handSize":6,"hand":[{"suit":"Diamonds","rank":"3","toString":"3 of Diamonds"},{"suit":"Hearts","rank":"9","toString":"9 of Hearts"},{"suit":"Hearts","rank":"Jack","toString":"Jack of Hearts"},{"suit":"Hearts","rank":"King","toString":"King of Hearts"},{"suit":"Spades","rank":"5","toString":"5 of Spades"},{"suit":"Spades","rank":"King","toString":"King of Spades"}]}],"currentDealer":"1","isBeggingPhase":true,"beggarId":"player-1771293671310-y4hnbis2v-30","matchId":null}}
+[2026-02-17T02:01:25.019Z] [LOG] 🔄 Rotated players for player-1771293671310-y4hnbis2v-30: ["4","1","3","2"]
+[2026-02-17T02:01:25.019Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 4 to 4: {"id":"player-1771293671310-y4hnbis2v-30","name":"4","handSize":6,"actualCardsCount":6,"sampleCards":["King of Clubs","Queen of Diamonds"]}
+[2026-02-17T02:01:25.020Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 1 to 4: {"id":"player-1771293665752-vk2a1jac1-341","name":"1","handSize":6,"actualCardsCount":6,"sampleCards":["10 of Clubs","Jack of Clubs"]}
+[2026-02-17T02:01:25.020Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 3 to 4: {"id":"player-1771293670386-q4n94yfs8-28","name":"3","handSize":6,"actualCardsCount":6,"sampleCards":["3 of Diamonds","9 of Hearts"]}
+[2026-02-17T02:01:25.020Z] [LOG] 🔍 DEBUGGING what the GUIIO sending for 2 to 4: {"id":"player-1771293669503-ob56m9pbk-31","name":"2","handSize":6,"actualCardsCount":6,"sampleCards":["4 of Clubs","King of Diamonds"]}
+[2026-02-17T02:01:25.021Z] [LOG] 🔍 SERVER - Sending game data to 4: {"currentDealer":"1","isBeggingPhase":true,"beggarId":"player-1771293671310-y4hnbis2v-30"}
+[2026-02-17T02:01:25.021Z] [LOG] 📤 sendToPlayer: {"to":"player-1771293671310-y4hnbis2v-30","type":"gameState","payload":{"players":[{"id":"player-1771293671310-y4hnbis2v-30","name":"4","handSize":6,"hand":[{"suit":"Clubs","rank":"King","toString":"King of Clubs"},{"suit":"Diamonds","rank":"Queen","toString":"Queen of Diamonds"},{"suit":"Hearts","rank":"3","toString":"3 of Hearts"},{"suit":"Hearts","rank":"5","toString":"5 of Hearts"},{"suit":"Hearts","rank":"10","toString":"10 of Hearts"},{"suit":"Spades","rank":"10","toString":"10 of Spades"}]},{"id":"player-1771293665752-vk2a1jac1-341","name":"1","handSize":6,"hand":[{"suit":"Clubs","rank":"10","toString":"10 of Clubs"},{"suit":"Clubs","rank":"Jack","toString":"Jack of Clubs"},{"suit":"Clubs","rank":"Ace","toString":"Ace of Clubs"},{"suit":"Diamonds","rank":"5","toString":"5 of Diamonds"},{"suit":"Diamonds","rank":"8","toString":"8 of Diamonds"},{"suit":"Spades","rank":"Jack","toString":"Jack of Spades"}]},{"id":"player-1771293670386-q4n94yfs8-28","name":"3","handSize":6,"hand":[{"suit":"Diamonds","rank":"3","toString":"3 of Diamonds"},{"suit":"Hearts","rank":"9","toString":"9 of Hearts"},{"suit":"Hearts","rank":"Jack","toString":"Jack of Hearts"},{"suit":"Hearts","rank":"King","toString":"King of Hearts"},{"suit":"Spades","rank":"5","toString":"5 of Spades"},{"suit":"Spades","rank":"King","toString":"King of Spades"}]},{"id":"player-1771293669503-ob56m9pbk-31","name":"2","handSize":6,"hand":[{"suit":"Clubs","rank":"4","toString":"4 of Clubs"},{"suit":"Diamonds","rank":"King","toString":"King of Diamonds"},{"suit":"Hearts","rank":"2","toString":"2 of Hearts"},{"suit":"Hearts","rank":"4","toString":"4 of Hearts"},{"suit":"Hearts","rank":"6","toString":"6 of Hearts"},{"suit":"Hearts","rank":"Queen","toString":"Queen of Hearts"}]}],"currentDealer":"1","isBeggingPhase":true,"beggarId":"player-1771293671310-y4hnbis2v-30","matchId":null}}
+[2026-02-17T02:01:25.021Z] [LOG] 📝 Game message (log): 🙏 Begging Phase
+[2026-02-17T02:01:25.022Z] [LOG] 📝 Game message (log): Current trump: Clubs
+[2026-02-17T02:01:25.022Z] [LOG] 🤔 Prompting player 4: do you want to beg?
+[2026-02-17T02:01:25.023Z] [LOG] 📤 sendToPlayer: {"to":"player-1771293671310-y4hnbis2v-30","type":"playerPrompt","payload":{"promptText":"do you want to beg?","buttonOptions":{"yesText":"Beg","noText":"Stand"},"playerId":"player-1771293671310-y4hnbis2v-30","matchId":null}}
+[2026-02-17T02:01:42.163Z] [LOG] ❌ WebSocket connection closed with code 1000: page-unload
+[2026-02-17T02:01:42.164Z] [LOG] 🧹 Player 1 disconnected from room 1 - removing immediately
+[2026-02-17T02:01:42.164Z] [LOG] 🔄 Transitioning room 1 back to lobby-ready state
+[2026-02-17T02:01:42.165Z] [LOG] 🚫 Removed player player-1771293665752-vk2a1jac1-341 from room 1
+[2026-02-17T02:01:42.165Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T02:01:42.165Z] [LOG] 👑 Room master transferred to 2
+[2026-02-17T02:01:42.479Z] [LOG] ❌ WebSocket connection closed with code 1000: page-unload
+[2026-02-17T02:01:42.479Z] [LOG] 🧹 Player 2 disconnected from room 1 - removing immediately
+[2026-02-17T02:01:42.480Z] [LOG] 🚫 Removed player player-1771293669503-ob56m9pbk-31 from room 1
+[2026-02-17T02:01:42.480Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T02:01:42.480Z] [LOG] 👑 Room master transferred to 3
+[2026-02-17T02:01:42.789Z] [LOG] ❌ WebSocket connection closed with code 1000: page-unload
+[2026-02-17T02:01:42.789Z] [LOG] 🧹 Player 3 disconnected from room 1 - removing immediately
+[2026-02-17T02:01:42.790Z] [LOG] 🚫 Removed player player-1771293670386-q4n94yfs8-28 from room 1
+[2026-02-17T02:01:42.790Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T02:01:42.790Z] [LOG] 👑 Room master transferred to 4
+[2026-02-17T02:01:43.086Z] [LOG] ❌ WebSocket connection closed with code 1000: page-unload
+[2026-02-17T02:01:43.086Z] [LOG] 🧹 Player 4 disconnected from room 1 - removing immediately
+[2026-02-17T02:01:43.086Z] [LOG] 🚫 Removed player player-1771293671310-y4hnbis2v-30 from room 1
+[2026-02-17T02:01:43.087Z] [LOG] 🔄 Team assignments reset due to player leaving
+[2026-02-17T02:01:43.087Z] [LOG] 🗑️ Removing empty room 1

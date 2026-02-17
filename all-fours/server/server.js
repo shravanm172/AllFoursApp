@@ -1,3 +1,4 @@
+// AI Usage Citation: Portions of this file were developed with assistance from GitHub Copilot (GPT-5.3-Codex).
 import WebSocket, { WebSocketServer } from "ws";
 import { GameController } from "./logic/GameController.js";
 import { GUIIO } from "./GUIIO.js";
@@ -8,7 +9,7 @@ const PORT = process.env.PORT || 8080;
 const server = http.createServer(); 
 const wss = new WebSocketServer({ server });
 server.listen(PORT, "0.0.0.0", () => {
-  console.log(`🌐 WebSocket server listening on ws://0.0.0.0:${PORT}`);
+  console.log(`WS server listening on ${PORT}`);
 });
 
 // In-memory room registry.

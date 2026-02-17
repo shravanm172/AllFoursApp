@@ -212,6 +212,10 @@ export class GameController {
       console.log("⚠️ Using fallback team assignment (order-based)");
     }
 
+    // Use player-pair display names consistently instead of Team A / Team B labels.
+    this.teamA.name = `${this.teamA.player1.getName()} & ${this.teamA.player2.getName()}`;
+    this.teamB.name = `${this.teamB.player1.getName()} & ${this.teamB.player2.getName()}`;
+
     console.log("🏁 FINAL TEAMS:");
     console.log(
       `Team A: ${this.teamA.player1.getName()} (${this.teamA.player1.getId()}) & ${this.teamA.player2.getName()} (${this.teamA.player2.getId()})`

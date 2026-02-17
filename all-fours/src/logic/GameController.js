@@ -80,6 +80,10 @@ export class GameController {
   setupTeams() {
     this.teamA = new Team("Team A", this.players[0], this.players[2]);
     this.teamB = new Team("Team B", this.players[1], this.players[3]);
+
+    // Keep display names consistent with multiplayer scoreboard naming.
+    this.teamA.name = `${this.teamA.player1.getName()} & ${this.teamA.player2.getName()}`;
+    this.teamB.name = `${this.teamB.player1.getName()} & ${this.teamB.player2.getName()}`;
   }
 
   /*
