@@ -27,6 +27,7 @@ export class GameController {
     this.io = gameIO; // Use the provided IO handler for user interaction
     this.playerData = playerData; // Array of {playerId, playerName} objects for multiplayer
     this.teamAssignments = teamAssignments; // Team assignments from server
+    this.matchTargetScore = 3;
   }
 
   /*
@@ -300,12 +301,15 @@ export class GameController {
    * Game State Checks
    */
   isMatchOver() {
-    return this.teamA.matchScore >= 14 || this.teamB.matchScore >= 14;
+    return (
+      this.teamA.matchScore >= this.matchTargetScore ||
+      this.teamB.matchScore >= this.matchTargetScore
+    );
   }
 
   getWinningTeam() {
-    if (this.teamA.matchScore >= 14) return this.teamA;
-    if (this.teamB.matchScore >= 14) return this.teamB;
+    if (this.teamA.matchScore >= this.matchTargetScore) return this.teamA;
+    if (this.teamB.matchScore >= this.matchTargetScore) return this.teamB;
     return null;
   }
 
@@ -394,7 +398,9 @@ export class GameController {
       "log"
     );
 
-    this.io.close();
+    if (typeof this.io.close === "function") {
+      this.io.close();
+    }
     return winner;
   }
 
@@ -424,6 +430,7 @@ export class GameController {
         players: [this.teamB.player1.name, this.teamB.player2.name],
       },
       currentDealer: this.getCurrentDealer().name,
+      matchTargetScore: this.matchTargetScore,
       isMatchOver: this.isMatchOver(),
       winner: this.getWinningTeam()?.name || null,
     };

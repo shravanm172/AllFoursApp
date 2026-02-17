@@ -2,6 +2,58 @@ import WebSocket, { WebSocketServer } from "ws";
 import { GameController } from "./logic/GameController.js"; // game logic
 import { GUIIO } from "./GUIIO.js"; // custom IO handler
 import http from "http";
+import fs from "fs";
+import path from "path";
+
+const SERVER_LOG_PATH = path.resolve(process.cwd(), "server-live.log");
+
+function toLogString(value) {
+  if (value instanceof Error) {
+    return value.stack || value.message;
+  }
+
+  if (typeof value === "string") {
+    return value;
+  }
+
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return String(value);
+  }
+}
+
+function appendServerLog(level, args) {
+  const timestamp = new Date().toISOString();
+  const line = `[${timestamp}] [${level}] ${args.map(toLogString).join(" ")}\n`;
+
+  try {
+    fs.appendFileSync(SERVER_LOG_PATH, line, "utf8");
+  } catch {
+    // Avoid crashing if file logging fails
+  }
+}
+
+const originalConsole = {
+  log: console.log.bind(console),
+  warn: console.warn.bind(console),
+  error: console.error.bind(console),
+};
+
+console.log = (...args) => {
+  originalConsole.log(...args);
+  appendServerLog("LOG", args);
+};
+
+console.warn = (...args) => {
+  originalConsole.warn(...args);
+  appendServerLog("WARN", args);
+};
+
+console.error = (...args) => {
+  originalConsole.error(...args);
+  appendServerLog("ERROR", args);
+};
 
 // const wss = new WebSocketServer({ port: 8080 });
 // console.log("🌐 WebSocket server running on ws://localhost:8080");
@@ -601,8 +653,18 @@ async function startGame(roomId) {
     // Start the game logic
     console.log("🎮 About to call game.playMatch()...");
     try {
-      await game.playMatch();
+      const winner = await game.playMatch();
       console.log("🎮 game.playMatch() completed successfully!");
+
+      transitionRoomToLobby(roomId, {
+        reason: "Match completed",
+        message: winner
+          ? `Match ended - ${winner.name} won. Returning to lobby.`
+          : "Match ended. Returning to lobby.",
+      });
+
+      // Re-broadcast lobby-ready room status after a natural match end
+      broadcastPlayerStatusUpdate(roomId);
     } catch (error) {
       console.error("❌ Error in game.playMatch():", error);
       console.error("❌ Stack trace:", error.stack);
@@ -610,6 +672,41 @@ async function startGame(roomId) {
   } catch (error) {
     console.error("❌ Error starting game:", error);
   }
+}
+
+function transitionRoomToLobby(
+  roomId,
+  { reason = "Game ended", message = "Game ended", excludePlayerId = null } = {}
+) {
+  const room = gameRooms[roomId];
+  if (!room) return false;
+
+  // If not currently in a game, nothing to transition.
+  if (!room.gameStarted && !room.game) {
+    return false;
+  }
+
+  console.log(`🔄 Transitioning room ${roomId} back to lobby-ready state`);
+
+  room.gameStarted = false;
+  room.game = null;
+
+  room.players.forEach((p) => {
+    if (p.playerId === excludePlayerId) return;
+    if (p.ws.readyState !== WebSocket.OPEN) return;
+
+    p.ws.send(
+      JSON.stringify({
+        type: "gameEnded",
+        payload: {
+          reason,
+          message,
+        },
+      })
+    );
+  });
+
+  return true;
 }
 
 function handleLeaveRoom(ws, payload) {
@@ -630,27 +727,11 @@ function handleLeaveRoom(ws, payload) {
       return;
     }
 
-    // If game is in progress, end it
-    if (room.gameStarted) {
-      console.log(`🛑 Ending game due to player leaving`);
-      room.gameStarted = false;
-      room.game = null;
-
-      // Notify all other players that game ended
-      room.players.forEach((p) => {
-        if (p.playerId !== playerId && p.ws.readyState === WebSocket.OPEN) {
-          p.ws.send(
-            JSON.stringify({
-              type: "gameEnded",
-              payload: {
-                reason: "Player left",
-                message: `Game ended - ${player.playerName} left the room`,
-              },
-            })
-          );
-        }
-      });
-    }
+    transitionRoomToLobby(roomId, {
+      reason: "Player left",
+      message: `Game ended - ${player.playerName} left the room`,
+      excludePlayerId: playerId,
+    });
 
     // Remove player from room immediately
     removePlayerFromRoom(roomId, playerId);
@@ -683,30 +764,11 @@ function cleanupPlayerFromRooms(ws, wasDeliberate = false) {
           `🧹 Player ${player.playerName} disconnected from room ${roomId} - removing immediately`
         );
 
-        // If game is in progress, end it
-        if (room.gameStarted) {
-          console.log(`🛑 Ending game due to player disconnection`);
-          room.gameStarted = false;
-          room.game = null;
-
-          // Notify all remaining players that game ended
-          room.players.forEach((p) => {
-            if (
-              p.playerId !== player.playerId &&
-              p.ws.readyState === WebSocket.OPEN
-            ) {
-              p.ws.send(
-                JSON.stringify({
-                  type: "gameEnded",
-                  payload: {
-                    reason: "Player disconnected",
-                    message: `Game ended - ${player.playerName} disconnected`,
-                  },
-                })
-              );
-            }
-          });
-        }
+        transitionRoomToLobby(roomId, {
+          reason: "Player disconnected",
+          message: `Game ended - ${player.playerName} disconnected`,
+          excludePlayerId: player.playerId,
+        });
 
         // Remove player from room immediately
         removePlayerFromRoom(roomId, player.playerId);
