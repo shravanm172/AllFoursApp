@@ -237,10 +237,6 @@
   font-size: 1.8rem;
 }
 
-
-
-
-/* Responsive design */
 @media (max-width: 768px) {
 
     .lobby-container {

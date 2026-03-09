@@ -342,6 +342,15 @@ export const WebSocketClient = ({
           wsRef.current.close(1000, 'reconnect-replace');
         }
 
+        console.log('WS_URL =', WS_URL);
+        console.log(
+          'import.meta.env =',
+          typeof import.meta !== 'undefined' ? import.meta.env : 'no import.meta'
+        );
+        console.log(
+          'process.env.NODE_ENV =',
+          typeof process !== 'undefined' ? process.env.NODE_ENV : 'no process'
+        );
         wsRef.current = new WebSocket(WS_URL);
 
         wsRef.current.onopen = () => {
