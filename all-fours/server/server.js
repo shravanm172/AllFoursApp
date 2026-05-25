@@ -16,6 +16,71 @@ server.listen(PORT, "0.0.0.0", () => {
 // Shape: roomId -> { players, game, gameStarted, roomMaster, teamAssignments }
 const gameRooms = {};
 
+// Alphanumeric alphabet with visually ambiguous chars removed (0/O, 1/I/L).
+const ROOM_ID_CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+function generateRoomId() {
+  let id = "";
+  for (let i = 0; i < 6; i++) {
+    id += ROOM_ID_CHARS[Math.floor(Math.random() * ROOM_ID_CHARS.length)];
+  }
+  return id;
+}
+
+function handleCreateRoom(ws, payload) {
+  try {
+    const { playerId, playerName } = payload || {};
+    if (!playerId || !playerName) {
+      ws.send(JSON.stringify({ type: "error", payload: { message: "playerId and playerName are required" } }));
+      return;
+    }
+
+    // Retry up to 10 times in the astronomically unlikely event of a collision.
+    let roomId;
+    let attempts = 0;
+    do {
+      roomId = generateRoomId();
+      attempts++;
+    } while (gameRooms[roomId] && attempts < 10);
+
+    if (gameRooms[roomId]) {
+      ws.send(JSON.stringify({ type: "error", payload: { message: "Could not generate a unique room code. Please try again." } }));
+      return;
+    }
+
+    // Create an empty room — the creator joins via a normal joinRoom message.
+    // Keeping creation and joining separate means the one-shot WS used to
+    // reserve the code can close cleanly without affecting room state.
+    gameRooms[roomId] = {
+      players: [],
+      game: null,
+      gameStarted: false,
+      roomMaster: null,
+      teamAssignments: null,
+      createdAt: Date.now(),
+    };
+
+    console.log(`🏠 Room ${roomId} created by ${playerName} (${playerId})`);
+
+    // Auto-purge if the creator never follows up with joinRoom.
+    setTimeout(() => {
+      const room = gameRooms[roomId];
+      if (room && room.players.length === 0) {
+        console.log(`🗑️ Auto-purging empty room ${roomId} (never joined)`);
+        delete gameRooms[roomId];
+      }
+    }, 120_000);
+
+    ws.send(JSON.stringify({
+      type: "roomCreated",
+      payload: { roomId },
+    }));
+  } catch (error) {
+    console.error("❌ Error in handleCreateRoom:", error);
+    ws.send(JSON.stringify({ type: "error", payload: { message: "Failed to create room" } }));
+  }
+}
+
 function heartbeat() { this.isAlive = true; }
 wss.on("connection", (ws) => {
   ws.isAlive = true;
@@ -101,18 +166,16 @@ async function handleJoinRoom(ws, payload) {
 
     console.log(`🚪 Player ${playerName} (${playerId}) joining room ${roomId}`);
 
-    // Lazily create room on first join.
-    if (!gameRooms[roomId]) {
-      gameRooms[roomId] = {
-        players: [],
-        game: null,
-        gameStarted: false,
-        roomMaster: null,
-        teamAssignments: null, 
-      };
-    }
-
+    // Room must already exist — created via the createRoom message.
     const room = gameRooms[roomId];
+    if (!room) {
+      console.log(`❌ Room ${roomId} not found — player must create one first`);
+      ws.send(JSON.stringify({
+        type: "error",
+        payload: { message: "Room not found. Check the room code or create a new room." },
+      }));
+      return;
+    }
 
     // Prevent duplicate presence in a room (same id or same name).
     const existingPlayer = room.players.find(
@@ -630,6 +693,12 @@ function transitionRoomToLobby(
   console.log(`🔄 Transitioning room ${roomId} back to lobby-ready state`);
 
   room.gameStarted = false;
+
+  // Abort the IO adapter first so any awaiting game-loop Promises
+  // resolve immediately and the old game instance can be GC'd.
+  if (room.game?.io?.abort) {
+    room.game.io.abort();
+  }
   room.game = null;
 
   room.players.forEach((p) => {

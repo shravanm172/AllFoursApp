@@ -17,12 +17,24 @@ export const Lobby = ({
   onSelectTeammate,
   onResetTeams,
 }) => {
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopyCode = () => {
+    navigator.clipboard.writeText(roomId).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   if (!lobbyState) {
     return (
       <div className="lobby-container">
         <div className="waiting-for-players">
           <h3>Connecting to room...</h3>
-          <p>Room: {roomId}</p>
+          <div className="room-code-display">
+            <span className="room-code-label">Room Code</span>
+            <span className="room-code">{roomId}</span>
+          </div>
         </div>
       </div>
     );
@@ -33,9 +45,16 @@ export const Lobby = ({
       <div className="waiting-for-players">
         <h3>Waiting for game to start...</h3>
 
-        {/* Leave Room Button */}
+        {/* Room code — shown prominently so host can share it */}
+        <div className="room-code-display">
+          <span className="room-code-label">Room Code</span>
+          <span className="room-code">{roomId}</span>
+          <button className="copy-code-button" onClick={handleCopyCode}>
+            {copied ? "✓ Copied" : "Copy"}
+          </button>
+        </div>
+
         <div className="room-section">
-          <p>Room: {roomId}</p>
           {lobbyState.playersInRoom >= 4 &&
             lobbyState.canStartGame &&
             lobbyState.roomMaster === playerId &&

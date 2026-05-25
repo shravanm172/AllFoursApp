@@ -9,7 +9,36 @@ export class GUIIO {
     this.isProcessingOverlay = false;
     this.overlayDelay = 2000;
     this.matchId = null;
-    this.isMatchActive = () => true; // injected from server if you want
+    this._aborted = false;
+  }
+
+  isMatchActive() {
+    return !this._aborted;
+  }
+
+  /**
+   * Cancel all pending player/card prompts and stop the overlay queue.
+   * Call this before nulling out room.game so the async playMatch chain
+   * can unwind and the old game instance becomes garbage-collectable.
+   */
+  abort() {
+    this._aborted = true;
+
+    // Resolve every hanging Promise with a sentinel so the awaiting
+    // game-loop line throws and exits cleanly.
+    const abortErr = new Error("MATCH_ABORTED");
+    for (const resolve of Object.values(this.pendingPrompts ?? {})) {
+      resolve(abortErr);
+    }
+    for (const resolve of Object.values(this.pendingCardPrompts ?? {})) {
+      resolve(abortErr);
+    }
+    this.pendingPrompts = {};
+    this.pendingCardPrompts = {};
+
+    // Drain the overlay queue so processOverlayQueue's while-loop exits
+    // on its next iteration rather than sleeping for another 2 s.
+    this.overlayQueue = [];
   }
 
 
